@@ -6,7 +6,7 @@ on:
       - master
       - main
     paths:
-      - "docs/**"
+      - "Documentation/**"
   repository_dispatch:
     types: [docs]
   workflow_dispatch:
