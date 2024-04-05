@@ -25,18 +25,41 @@ jobs:
         - uses: actions/checkout@v4.1.1
         
         - name: Markdown action - create indexes
-          uses: DaanV2/Markdown-Action-Create-Indexes@v5.0.0
-          with:
-            folder: ${{ env.MARKDOWN_FOLDER }}
-            include: |
-              *.pdf
-              *.mobi
-              *.epub
-              *.zip
-              *.md
-            exclude:
-              README.md
-              Home.md
+          run: |
+            # Function to update Home.md with links from the current directory and subdirectories
+            function update_links {
+            local directory=$1
+            local relative_path=${directory#$MARKDOWN_FOLDER/}
+
+            # Navigate to the directory
+            cd "$directory"
+
+            # Define the Home.md file path
+            HOME_MD="$MARKDOWN_FOLDER/Home.md"
+
+            # Get the current directory name to use as a header
+            DIRECTORY_NAME=$(basename "$directory")
+
+            # Check if the directory header exists, if not, add it
+            grep -q "^## $DIRECTORY_NAME$" "$HOME_MD" || echo -e "\n## $DIRECTORY_NAME\n" >> "$HOME_MD"
+
+            # Loop through all files and subdirectories in the current directory
+            for item in *; do
+              if [ -d "$item" ]; then
+                # Recursively call update_links if a subdirectory is found
+                update_links "$directory/$item"
+              elif [[ "$item" == *.md && "$item" != "Home.md" ]]; then
+                # Construct the markdown link
+                LINK="- [${item%.*}]($relative_path/$item)"
+
+                # Check if the link already exists in Home.md, if not, add it
+                grep -qF "$LINK" "$HOME_MD" || echo "$LINK" >> "$HOME_MD"
+              fi
+            done
+            }
+
+            # Start the process from the root markdown folder
+            update_links ${{ env.MARKDOWN_FOLDER }}
 
         - name: Pushing to the protected branch 'protected'
           uses: CasperWA/push-protected@v2
