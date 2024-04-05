@@ -24,9 +24,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+        with:
+          token: ${{ secrets.WIKI_SYNC_SECRET }}
+          ref: ${{ github.event.repository.default_branch }}
+
       # Runs a single command using the runners shell
       - name: Generated Markdown Readmes
         uses: DaanV2/Markdown-Action-Create-Indexes@v2.0.0
+        with:
+          token: ${{ secrets.WIKI_SYNC_SECRET }}
+          ref: ${{ github.event.repository.default_branch }}
 
       - name: Commit changes
         continue-on-error: true
