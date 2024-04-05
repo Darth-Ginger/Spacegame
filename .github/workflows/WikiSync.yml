@@ -36,7 +36,16 @@ jobs:
   markdown-indexes:
       runs-on: [ ubuntu-latest ]
       steps:
-        - uses: actions/checkout@v3
+        - name: Checkout Repo
+          uses: actions/checkout@v3
+          with:
+            token: ${{ secrets.WIKI_SYNC_SECRET }}
+            ref: ${{ github.event.repository.default_branch }}
+    
+        - name: Create branch first
+          run: |
+            git checkout -b $SYNC_CHANGES_REPO_NAME
+          shell: bash
         
         - name: Markdown action - create indexes
           uses: DaanV2/Markdown-Action-Create-Indexes@v5.0.0
