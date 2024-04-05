@@ -58,6 +58,7 @@ jobs:
                   echo "<$(basename "$item")>" >> "$HOME_MD"
                 fi
               done
+              cat "$HOME_MD"
             }
 
             # Populate Home.md with links
