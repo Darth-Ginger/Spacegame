@@ -35,6 +35,7 @@ jobs:
             MARKDOWN_FOLDER="${{ env.MARKDOWN_FOLDER }}"
             HOME_MD="$MARKDOWN_FOLDER/Home.md"
 
+            echo "$HOME_MD"
             # Start with a clean Home.md
             echo "# Markdown folder" > "$HOME_MD"
 
