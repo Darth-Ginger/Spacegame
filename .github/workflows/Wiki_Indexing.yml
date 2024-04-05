@@ -1,0 +1,73 @@
+name: Wiki Indexing
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - "Documentation/Wiki/**"
+  repository_dispatch:
+    types: [docs]
+  workflow_dispatch:
+  gollum:
+  
+env:
+  GIT_AUTHOR_NAME: Github Actions
+  GIT_AUTHOR_EMAIL: action@github.com
+  SYNC_CHANGES_REPO_NAME: docs-sync
+  MARKDOWN_FOLDER: "Documentation/Wiki"
+
+jobs:
+   markdown-indexes:
+      runs-on: [ ubuntu-latest ]
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v4.1.1
+
+        - name: Show Markdown Folder
+          run: |
+            echo "Markdown files are in ${{env.MARKDOWN_FOLDER }}"
+            ls -la ${{env.MARKDOWN_FOLDER}}
+            
+        - name: Generate Home.md
+          run: |
+            MARKDOWN_FOLDER="${{ env.MARKDOWN_FOLDER }}"
+            HOME_MD="$MARKDOWN_FOLDER/Home.md"
+
+            echo "$HOME_MD"
+            # Start with a clean Home.md
+            echo "# Markdown folder" > "$HOME_MD"
+
+            # Function to append links to Home.md
+            function append_links {
+              local directory=$1
+              local prefix=$2
+
+              for item in "$directory"/*; do
+                echo "$item"
+                if [ -d "$item" ]; then
+                  # It's a directory, add as a header to Home.md
+                  dirname=$(basename "$item")
+                  echo "#$prefix $dirname"
+                  echo "#$prefix $dirname" >> "$HOME_MD"
+                  append_links "$item" "$prefix#"
+                elif [[ "$item" == *.md && "$(basename "$item")" != "Home.md" ]]; then
+                  echo "<$(basename "$item")>"
+                  # It's a markdown file, add as a link to Home.md
+                  echo "<$(basename "$item")>" >> "$HOME_MD"
+                fi
+              done
+              cat "$HOME_MD"
+            }
+
+            # Populate Home.md with links
+            append_links "$MARKDOWN_FOLDER" ""
+
+        - name: Push to protected branch
+          uses: CasperWA/push-protected@v2
+          with:
+            token: ${{ secrets.WIKI_SYNC_SECRET }}
+            branch: main
+            unprotect_reviews: true
+        

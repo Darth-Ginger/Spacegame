@@ -1,0 +1,37 @@
+name: Wiki Content Sync
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - "Documentation/Wiki/**"
+  repository_dispatch:
+    types: [docs]
+  workflow_dispatch:
+  gollum:
+  
+env:
+  GIT_AUTHOR_NAME: Github Actions
+  GIT_AUTHOR_EMAIL: action@github.com
+  SYNC_CHANGES_REPO_NAME: docs-sync
+
+jobs:
+
+  update-wiki:
+    runs-on: [ ubuntu-latest ]
+    steps:      
+      - uses: actions/checkout@master
+      - name: Sync Wiki
+        uses: joeizzard/action-wiki-sync@master
+        with:
+          wiki_folder: Documentation/Wiki
+          token: ${{ secrets.WIKI_SYNC_SECRET }}
+          username: ${{ env.GIT_AUTHOR_NAME }}
+          commit_username: ${{ env.GIT_AUTHOR_NAME }}
+          commit_email: ${{ env.GIT_AUTHOR_EMAIL }}
+          commit_message: 'action: wiki sync'
+
+ 
+            
