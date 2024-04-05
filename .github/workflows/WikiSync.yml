@@ -52,6 +52,15 @@ jobs:
           with:
             folder: ${{ github.workspace }}
             filename: Home.md
+            include: |
+              *.pdf
+              *.mobi
+              *.epub
+              *.zip
+              *.md
+            exclude:
+              README.md
+              Home.md
         
         - name: Create pull-request
           uses: repo-sync/pull-request@v2
