@@ -6,7 +6,7 @@ on:
       - master
       - main
     paths:
-      - "Documentation/**"
+      - "Documentation/Wiki/**"
   repository_dispatch:
     types: [docs]
   workflow_dispatch:
@@ -51,7 +51,7 @@ jobs:
           uses: DaanV2/Markdown-Action-Create-Indexes@v5.0.0
           with:
             folder: ${{ github.workspace }}
-            filename: index.md
+            filename: Home.md
         
         - name: Create pull-request
           uses: repo-sync/pull-request@v2
