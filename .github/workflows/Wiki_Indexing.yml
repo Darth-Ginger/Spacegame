@@ -59,13 +59,10 @@ jobs:
             # Populate Home.md with links
             append_links "$MARKDOWN_FOLDER" ""
 
-        - name: Commit and push changes
-          run: |
-            git config --global user.name 'Darth-Ginger'
-            git config --global user.email 'justin.a.schwarz@gmail.com'
-            git add ${{ env.MARKDOWN_FOLDER }}/Home.md
-            git commit -m "Automatically add links to Markdown files" || exit 0
-            git push
+        - name: Push to protected branch
+          uses: CasperWA/push-protected@v2
+          with:
+            token: ${{ secrets.WIKI_SYNC_SECRET }}
             branch: main
-          
+            unprotect_reviews: true
         
