@@ -16,7 +16,7 @@ env:
   GIT_AUTHOR_NAME: Github Actions
   GIT_AUTHOR_EMAIL: action@github.com
   SYNC_CHANGES_REPO_NAME: docs-sync
-  MARKDOWN_FOLDER: "Documentation/Wiki/"
+  MARKDOWN_FOLDER: "Documentation/Wiki"
 
 jobs:
    markdown-indexes:
