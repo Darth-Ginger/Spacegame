@@ -1,0 +1,4 @@
+repository "Spacegame@first_2d_Rouguelike@cloud"
+  path "/"
+    br "/main"
+    co "/main"
