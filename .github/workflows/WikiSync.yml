@@ -41,7 +41,7 @@ jobs:
           with:
             folder: ${{ github.workspace }}
             filename: index.md
-            content: .content.md
+            #content: .content.md
           
 
   job-sync-wiki-to-docs:
