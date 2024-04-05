@@ -1,4 +1,4 @@
-name: Wiki Content Sync
+name: Wiki Indexing
 
 on:
   push:
