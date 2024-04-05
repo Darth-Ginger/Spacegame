@@ -13,7 +13,7 @@ on:
   gollum:
   
 env:
-  GIT_AUTHOR_NAME: GitHub Action
+  GIT_AUTHOR_NAME: Github Actions
   GIT_AUTHOR_EMAIL: action@github.com
   SYNC_CHANGES_REPO_NAME: docs-sync
 
@@ -27,7 +27,7 @@ jobs:
       - name: Sync docs folder to wiki
         uses: newrelic/wiki-sync-action@v1.0.1
         with:
-          source: docs
+          source: Documentation/Wiki
           destination: wiki
           token: ${{ secrets.WIKI_SYNC_SECRET }}
           gitAuthorName: ${{ env.GIT_AUTHOR_NAME }}
