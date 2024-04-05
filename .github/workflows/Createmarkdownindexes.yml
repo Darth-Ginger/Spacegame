@@ -33,7 +33,7 @@ jobs:
         run: |
           cd ${{github.workspace}}
           git config --global user.email "justin.a.schwarz@gmail.com"
-          git config --global user.name "DaanV2 Bot"
+          git config --global user.name "Darth-Ginger"
           git add .
           git commit -m "auto: Generated markdown indexes"
           git push
