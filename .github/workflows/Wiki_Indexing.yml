@@ -44,12 +44,15 @@ jobs:
               local prefix=$2
 
               for item in "$directory"/*; do
+                echo "$item"
                 if [ -d "$item" ]; then
                   # It's a directory, add as a header to Home.md
                   dirname=$(basename "$item")
+                  echo "#$prefix $dirname"
                   echo "#$prefix $dirname" >> "$HOME_MD"
                   append_links "$item" "$prefix#"
                 elif [[ "$item" == *.md && "$(basename "$item")" != "Home.md" ]]; then
+                  echo "<$(basename "$item")>"
                   # It's a markdown file, add as a link to Home.md
                   echo "<$(basename "$item")>" >> "$HOME_MD"
                 fi
