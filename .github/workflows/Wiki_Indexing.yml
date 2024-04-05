@@ -28,6 +28,7 @@ jobs:
         - name: Show Markdown Folder
           run: |
             echo "Markdown files are in ${{env.MARKDOWN_FOLDER }}"
+            ls -la ${{env.MARKDOWN_FOLDER}}
             
         - name: Markdown action - create indexes
           run: |
