@@ -85,16 +85,24 @@ public class StateMachine<T> where T : Enum
 
         return false; // Transition not allowed
     }
+
+    /// <summary>
+    /// Attempts to change the state of the state machine based on a string.
+    /// </summary>
+    /// <param name="newState"></param>
+    /// <returns>True if the transition was successful, false otherwise.</returns>
+    public bool ChangeState(string newState)
+    {
+        return ChangeState((T)Enum.Parse(typeof(T), newState));
+    }
     
     /// <summary>
     /// Attempts to change the state of the state machine based on an event.
     /// </summary>
-    /// <param name="eventName"></param>
-    /// <returns>True if the transition was successful, false otherwise.</returns>
     private void ChangeState()
     {
-        var newState = (T)EventManager.GetData("ChangeState");
-        Debug.Log(newState);
+        var newState = EventManager.GetString("ChangeState");
+        // Debug.Log(newState);
         if (newState != null) ChangeState(newState);
         // Return false if the data is not of the correct type
         
@@ -105,7 +113,7 @@ public class StateMachine<T> where T : Enum
     /// </summary>
     public bool ToggleListener()
     {
-        if (_eventListener){
+        if (!_eventListener){
             EventManager.StartListening("ChangeState", ChangeState);
             _eventListener = true;
         }

@@ -88,6 +88,23 @@ public class StateMachineTests
     }
 
     [Test]
+    public void EventHandling_EventChangesState()
+    {
+        // Arrange
+        StateMachine<YourEnumType> stateMachine = new StateMachine<YourEnumType>();
+        stateMachine.AddTransition(YourEnumType.State1, YourEnumType.State2);
+
+        // Act
+        stateMachine.ToggleListener();
+
+        EventManager.SetData("ChangeState", YourEnumType.State2.ToString());
+        EventManager.EmitEvent("ChangeState");        
+
+        // Assert
+        Assert.AreEqual(YourEnumType.State2, stateMachine.CurrentState);
+    }
+
+    [Test]
     public void CurrentStateRetrieval_ReturnsCurrentState()
     {
         // Arrange
