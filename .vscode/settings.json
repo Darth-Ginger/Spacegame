@@ -53,5 +53,6 @@
     },
     "dotnet.defaultSolution": "Spacegame.sln",
     "CodeGPT.Autocomplete.provider": "Ollama - deepseek-coder:base",
-    "CodeGPT.Autocomplete.enabled": false
+    "CodeGPT.Autocomplete.enabled": false,
+    "inline-bookmarks.view.showVisibleFilesOnly": false
 }
