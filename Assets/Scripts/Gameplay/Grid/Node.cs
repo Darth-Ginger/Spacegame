@@ -7,21 +7,21 @@ using static Graph;
 
 public class Node
 {
-    public  Vector3 Position                      { get => Position; set => Position = value; }
-    public  Vector2 Position2D                     { get => Position2D; }
+    public  Vector3Int Position;
+    public  Vector2Int Position2D                 { get => (Vector2Int)Position; }
     public  string  Name                          { get => Position.ToString(); } // Getter for Position
     public  float   X                             { get => Position.x; } // Getter for Position.x
     public  float   Y                             { get => Position.y; } // Getter for Position.y
-    public  int     BaseCost                      { get => BaseCost; private set => BaseCost = value; }
+    public  int     BaseCost;
     private int     AdjustedCost                  { get; set; }
     public  int     Cost                          { get => AdjustedCost; } // Getter for AdjustedCost;
     public  Dictionary<string, Node> Neighbors    { get; private set; }
     private Graph Graph                           { get; }
-    private Tile TileReference                    { get => TileReference; set => TileReference = value; }
-    private bool Traversible                      { get => Traversible; set => Traversible = value; }
+    private Tile TileReference;
+    private bool Traversible;
     
 
-    public Node(Vector3 position, Graph graph, int baseCost = 10, Tile tileReference = null)
+    public Node(Vector3Int position, Graph graph, int baseCost = 10, Tile tileReference = null)
     {
         this.Position = position;
         this.BaseCost = baseCost;
@@ -72,12 +72,17 @@ public class Node
     #endregion Add/Remove Neighbors
     
     public void AddTileReference(Tile tile) => TileReference = tile;
+    public Tile GetTileReference() => TileReference;
+
+    public void SetTraversible(bool status) => Traversible = status;
+    public void ToggleTraversible() => Traversible = !Traversible;
+    public bool IsTraversible() => Traversible;
 
     // Method to update node's properties based on the tile's current state
     public void UpdateNodeState()
     {
         AdjustedCost = (int)(BaseCost * TileReference.GetCostModifier());
-        Traversible = TileReference.CanWalk();
+        SetTraversible(TileReference.CanWalk());
     }
     #endregion  Utility Methods
 }

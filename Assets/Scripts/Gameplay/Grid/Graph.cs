@@ -12,13 +12,13 @@ public class Graph
     /// The size of the graph represented by a Vector2
     /// Defaults to 10x10
     /// </summary>
-    public Vector2 GraphSize { get; private set; }
+    public Vector2Int GraphSize { get; private set; }
     public int Width  => (int)GraphSize.x;
     public int Height => (int)GraphSize.y;
     /// <summary>
     /// The list of nodes in the graph
     /// </summary>
-    public Dictionary<Vector2, Node> Nodes  { get; private set; }
+    public Dictionary<Vector2Int, Node> Nodes  { get; private set; }
     /// <summary>
     /// The grid used for the <see cref="Graph"/>
     /// Obtained from the <see cref="Board"/> component
@@ -41,7 +41,7 @@ public class Graph
         Nodes = new();
         Grid = grid;
         this.pathfinder = pathfinder;
-        GraphSize = new Vector2(10, 10);
+        GraphSize = new Vector2Int(10, 10);
     }
     
 
@@ -49,18 +49,18 @@ public class Graph
     public void GenerateGrid(Vector3 tileSize)
     {
         // Generate nodes
-        for (int x = 0; x < Width; x++)
+        for (int x = 0; x <= Width; x++)
         {
-            for (int y = 0; y < Height; y++)
+            for (int y = 0; y <= Height; y++)
             {
-                Vector3 position = Grid.WorldToCell(new Vector3(x * tileSize.x, 0, y * tileSize.y));
+                Vector3Int position = new(x,y,0);
                 Node node = new(position, this, 10); // Placeholder for Tile
                 AddNode(node);
             }
         }
 
         // Assign neighbors to each node
-        foreach (KeyValuePair<Vector2, Node> node in Nodes)
+        foreach (KeyValuePair<Vector2Int, Node> node in Nodes)
         {
             Dictionary<NeighborType, Node> neighbors = FindNeighbors(node);
             node.Value.AddNeighbors(neighbors);
@@ -74,12 +74,12 @@ public class Graph
     public Vector2 WorldToGridPosition(Vector2 worldPosition) => new(Grid.WorldToCell(worldPosition).x, Grid.WorldToCell(worldPosition).z);
 
     
-    private Dictionary<NeighborType, Node> FindNeighbors(KeyValuePair<Vector2, Node> node)
+    private Dictionary<NeighborType, Node> FindNeighbors(KeyValuePair<Vector2Int, Node> node)
     {
         
         Dictionary<NeighborType, Node> neighbors = new(8);
 
-        Vector2 position = node.Key;
+        Vector2Int position = node.Key;
         Node    thisNode = node.Value;
         int index = (int)(position.x + position.y * Width);
 
@@ -103,7 +103,7 @@ public class Graph
         
         foreach (NeighborType NeighborType in Enum.GetValues(typeof(NeighborType)))
         {
-            Vector2 neighbor = new();
+            Vector2Int neighbor = new();
             switch (NeighborType)
             {
                 case NeighborType.NorthWest: 
@@ -125,7 +125,7 @@ public class Graph
                     break;
             }
 
-            neighbors[NeighborType] = Nodes[neighbor];
+            neighbors[NeighborType] = Nodes.TryGetValue(neighbor, out Node neighborNode) ? neighborNode : null; 
             
         }
         
@@ -135,7 +135,7 @@ public class Graph
     public void AddNode(Node node)           => Nodes.TryAdd(node.Position2D, node);
 
     public void RemoveNode(Node node)        => Nodes.Remove(node.Position2D);
-    public void RemoveNode(Vector2 position) => Nodes.Remove(position);
+    public void RemoveNode(Vector2Int position) => Nodes.Remove(position);
 
     public List<Node> FindPath(Node startNode, Node endNode)
     {

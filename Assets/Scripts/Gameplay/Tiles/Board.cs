@@ -16,11 +16,30 @@ public class Board : MonoBehaviour
     [SerializedDictionary("TileType", "Possible Tiles")]
     public SerializableSortedDictionary<TileType, ScriptableTileDict> AllTiles;
     public List<Tile> Tiles { get; private set; }
+    [GetFromThis]
     public Grid Grid;
     public Graph Graph;
     public PathFinder PathFinder;
 
+    [NaughtyAttributes.Button("Generate Tiles")]
+    public void Generate() 
+    {
+        if (transform.childCount > 0 && generated) 
+        {
+            Clear();
+        }
+        GenerateTiles();
+    }
+
+    [NaughtyAttributes.Button("Clear Tiles")]
+    public void Clear()
+    {
+        while (transform.Find("Tiles").childCount > 0) DestroyImmediate(transform.Find("Tiles").GetChild(0).gameObject);
+        generated = false;
+        Graph = null;
+    }
     private bool generated = false;
+    private GameObject tileContainer;
     
 
     public Board() 
@@ -28,31 +47,43 @@ public class Board : MonoBehaviour
         Graph = new Graph(Grid, PathFinder);
     }
 
+    public void Awake()
+    {
+        Graph = new Graph(Grid, PathFinder);
+    }
+
     public void Start()
     {
-        Grid = GetComponent<Grid>();
-        Grid.cellLayout = GridLayout.CellLayout.Hexagon;
-        Grid.cellSwizzle = GridLayout.CellSwizzle.XYZ;
+        GenerateTiles();
     }
 
 
     public void GenerateTiles()
     {
         if (generated) return;
+        Graph ??= new Graph(Grid, PathFinder);
+        if ( tileContainer == null )
+        {
+            tileContainer = new GameObject("Tiles");
+            tileContainer.transform.parent = transform;
+            tileContainer.transform.localPosition = Vector3.zero;
+            tileContainer.name = "Tiles";
+        }
+        
         // Generate the grid
         Graph.GenerateGrid( Grid.cellSize);
-
         //@todo - create method for procedural tile selection
         // Map tiles to nodes
         foreach (ScriptableTileDict tileDict in AllTiles.Values)
         {
             foreach (GameObject tile in tileDict.GetPrefabs())
             {
-                foreach (KeyValuePair<Vector2, Node> node in Graph.Nodes)
+                foreach (KeyValuePair<Vector2Int, Node> node in Graph.Nodes)
                 {
                     Vector3 worldPosition = Graph.GridToWorldPosition(node.Key);
-                    GameObject tileObject = Instantiate(tile, worldPosition, Quaternion.identity);
-                    tileObject.transform.parent = transform;
+                    GameObject tileObject = Instantiate(original: tile, position: worldPosition, rotation: Quaternion.Euler(90, 0, 0), parent: tileContainer.transform);
+                    // tileObject.transform.rotation = Quaternion.Euler(90, 0, 0);
+                    tileObject.name = node.Value.Position2D.ToString();
                     Tile tileComponent = tileObject.GetComponent<Tile>();
                     node.Value.AddTileReference(tileComponent);  
                 }
