@@ -146,15 +146,8 @@ public class Graph
     public Node GetNode(Vector2 position)    => GetNode(position.ToV2Int());
     public Node GetNode(Vector3 position)    => GetNode(position.ToV2Int());
     public Node GetNode(Vector3Int position) => GetNode(position.ToV2Int());
-    public Node GetNode(string name)
-    {
-        var match = System.Text.RegularExpressions.Regex.Match(name, @"\((\d+),(\d+)\)");
-        if (match.Success
-            && int.TryParse(match.Groups[1].Value, out int x)
-            && int.TryParse(match.Groups[2].Value, out int y))
-            return GetNode(new Vector2Int(x, y));
-        return null;
-    }
+    public Node GetNode(string name) => Nodes.Where(x => x.Value.Name == name).Select(x => x.Value).FirstOrDefault();
+    
     #endregion Node Management
 
     public List<Node> FindPath(Node startNode, Node endNode)

@@ -24,8 +24,8 @@ public class Board : MonoBehaviour
     
     public bool generated = false;
     private GameObject tileContainer;
-
-    public Vector3 euler = new(90, 0, 0);
+    [Label("Tile Rotation")]
+    public Vector3 euler = new(0, 90, 90);
     [NaughtyAttributes.Button("Generate Tiles")]
     public void Generate() 
     {
@@ -109,7 +109,7 @@ public class Board : MonoBehaviour
         //}
 
 
-        transform.Find("Rig").position = Graph.GetNode("0,0").GridPositionToWorld() + new Vector3(0, 0, 1f);
+        transform.Find("Rig").position = Graph.GetNode("(0,0)").GridPositionToWorld() + new Vector3(0, 0, 1f);
 
         generated = true;
     }
