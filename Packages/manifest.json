@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.cinemachine": "2.9.7",
     "com.unity.collab-proxy": "2.3.1",
     "com.unity.feature.2d": "2.0.0",
@@ -7,6 +8,7 @@
     "com.unity.feature.worldbuilding": "1.0.1",
     "com.unity.inputsystem": "1.7.0",
     "com.unity.probuilder": "5.2.2",
+    "com.unity.progrids": "3.0.3-preview.6",
     "com.unity.serialization": "3.1.1",
     "com.unity.shadergraph": "14.0.10",
     "com.unity.textmeshpro": "3.0.8",

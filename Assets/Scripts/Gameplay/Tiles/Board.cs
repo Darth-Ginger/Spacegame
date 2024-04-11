@@ -20,11 +20,15 @@ public class Board : MonoBehaviour
     public Grid Grid;
     public Graph Graph;
     public PathFinder PathFinder;
+    
+    public bool generated = false;
+    private GameObject tileContainer;
 
+    public Vector3 euler = new(90, 0, 0);
     [NaughtyAttributes.Button("Generate Tiles")]
     public void Generate() 
     {
-        if (transform.childCount > 0 && generated) 
+        if (transform.Find("Tiles").childCount > 0 && generated) 
         {
             Clear();
         }
@@ -38,18 +42,17 @@ public class Board : MonoBehaviour
         generated = false;
         Graph = null;
     }
-    private bool generated = false;
-    private GameObject tileContainer;
+    
     
 
     public Board() 
     { 
-        Graph = new Graph(Grid, PathFinder);
+        
     }
 
     public void Awake()
     {
-        Graph = new Graph(Grid, PathFinder);
+        
     }
 
     public void Start()
@@ -61,7 +64,8 @@ public class Board : MonoBehaviour
     public void GenerateTiles()
     {
         if (generated) return;
-        Graph ??= new Graph(Grid, PathFinder);
+        Graph = new Graph(Grid, PathFinder);
+        tileContainer = transform.Find("Tiles").gameObject;
         if ( tileContainer == null )
         {
             tileContainer = new GameObject("Tiles");
@@ -81,7 +85,7 @@ public class Board : MonoBehaviour
                 foreach (KeyValuePair<Vector2Int, Node> node in Graph.Nodes)
                 {
                     Vector3 worldPosition = Graph.GridToWorldPosition(node.Key);
-                    GameObject tileObject = Instantiate(original: tile, position: worldPosition, rotation: Quaternion.Euler(90, 0, 0), parent: tileContainer.transform);
+                    GameObject tileObject = Instantiate(original: tile, position: worldPosition, rotation: Quaternion.Euler(euler), parent: tileContainer.transform);
                     // tileObject.transform.rotation = Quaternion.Euler(90, 0, 0);
                     tileObject.name = node.Value.Position2D.ToString();
                     Tile tileComponent = tileObject.GetComponent<Tile>();
