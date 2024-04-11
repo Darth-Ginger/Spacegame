@@ -68,7 +68,11 @@ namespace EOverlays.Editor.Core
         }
 
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
         private static async void AssignVisualElements()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+
         {
             if (navigationBar != null) return;
             if (navigationBar == null) navigationBar = EOverlayVisualElements.NavigationBar();

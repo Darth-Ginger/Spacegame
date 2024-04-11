@@ -132,10 +132,30 @@ public class Graph
         return neighbors;
     }
 
+    #region    Node Management
+
+    // Add Nodes to the graph
     public void AddNode(Node node)           => Nodes.TryAdd(node.Position2D, node);
 
+    // Remove Nodes from the graph
     public void RemoveNode(Node node)        => Nodes.Remove(node.Position2D);
     public void RemoveNode(Vector2Int position) => Nodes.Remove(position);
+
+    // Get Nodes from the graph
+    public Node GetNode(Vector2Int position) => Nodes.TryGetValue(position, out Node node) ? node : null;
+    public Node GetNode(Vector2 position)    => GetNode(position.ToV2Int());
+    public Node GetNode(Vector3 position)    => GetNode(position.ToV2Int());
+    public Node GetNode(Vector3Int position) => GetNode(position.ToV2Int());
+    public Node GetNode(string name)
+    {
+        var match = System.Text.RegularExpressions.Regex.Match(name, @"\((\d+),(\d+)\)");
+        if (match.Success
+            && int.TryParse(match.Groups[1].Value, out int x)
+            && int.TryParse(match.Groups[2].Value, out int y))
+            return GetNode(new Vector2Int(x, y));
+        return null;
+    }
+    #endregion Node Management
 
     public List<Node> FindPath(Node startNode, Node endNode)
     {

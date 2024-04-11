@@ -6,6 +6,7 @@ using CustomInspector;
 using NaughtyAttributes;
 using Injector;
 using AYellowpaper.SerializedCollections;
+using System.Linq;
 
 [RequireComponent(typeof(Grid))]
 public class Board : MonoBehaviour
@@ -76,23 +77,39 @@ public class Board : MonoBehaviour
         
         // Generate the grid
         Graph.GenerateGrid( Grid.cellSize);
+        foreach (var (node, tileObject) in
         //@todo - create method for procedural tile selection
         // Map tiles to nodes
-        foreach (ScriptableTileDict tileDict in AllTiles.Values)
+        from ScriptableTileDict tileDict in AllTiles.Values
+        from GameObject tile in tileDict.GetPrefabs()
+        from KeyValuePair<Vector2Int, Node> node in Graph.Nodes
+        let worldPosition = Graph.GridToWorldPosition(node.Key)
+        let tileObject = Instantiate(original: tile, position: worldPosition, rotation: Quaternion.Euler(euler), parent: tileContainer.transform)
+        select (node, tileObject))
         {
-            foreach (GameObject tile in tileDict.GetPrefabs())
-            {
-                foreach (KeyValuePair<Vector2Int, Node> node in Graph.Nodes)
-                {
-                    Vector3 worldPosition = Graph.GridToWorldPosition(node.Key);
-                    GameObject tileObject = Instantiate(original: tile, position: worldPosition, rotation: Quaternion.Euler(euler), parent: tileContainer.transform);
-                    // tileObject.transform.rotation = Quaternion.Euler(90, 0, 0);
-                    tileObject.name = node.Value.Position2D.ToString();
-                    Tile tileComponent = tileObject.GetComponent<Tile>();
-                    node.Value.AddTileReference(tileComponent);  
-                }
-            }
+            // tileObject.transform.rotation = Quaternion.Euler(90, 0, 0);
+            tileObject.name = node.Value.Position2D.ToString();
+            Tile tileComponent = tileObject.GetComponent<Tile>();
+            node.Value.AddTileReference(tileComponent);
         }
+        //foreach (ScriptableTileDict tileDict in AllTiles.Values)
+        // {
+        //     foreach (GameObject tile in tileDict.GetPrefabs())
+        //     {
+        //         foreach (KeyValuePair<Vector2Int, Node> node in Graph.Nodes)
+        //         {
+        //             Vector3 worldPosition = Graph.GridToWorldPosition(node.Key);
+        //             GameObject tileObject = Instantiate(original: tile, position: worldPosition, rotation: Quaternion.Euler(euler), parent: tileContainer.transform);
+        //             // tileObject.transform.rotation = Quaternion.Euler(90, 0, 0);
+        //             tileObject.name = node.Value.Position2D.ToString();
+        //             Tile tileComponent = tileObject.GetComponent<Tile>();
+        //             node.Value.AddTileReference(tileComponent);  
+        //         }
+        //     }
+        //}
+
+
+        transform.Find("Rig").position = Graph.GetNode("0,0").GridPositionToWorld() + new Vector3(0, 0, 1f);
 
         generated = true;
     }
