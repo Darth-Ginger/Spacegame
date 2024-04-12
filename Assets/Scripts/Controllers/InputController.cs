@@ -166,6 +166,15 @@ public partial class @InputController: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ZoomCin"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""1fab6fcb-24d6-4e35-b30b-81550fcc4b79"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -333,6 +342,17 @@ public partial class @InputController: IInputActionCollection2, IDisposable
                     ""action"": ""RotateCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9fe186a4-3462-40ae-ae17-8084102fe729"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": ""Normalize(min=-1,max=1)"",
+                    ""groups"": """",
+                    ""action"": ""ZoomCin"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -355,6 +375,7 @@ public partial class @InputController: IInputActionCollection2, IDisposable
         m_Camera_RotateCamera = m_Camera.FindAction("RotateCamera", throwIfNotFound: true);
         m_Camera_ZoomCamera = m_Camera.FindAction("ZoomCamera", throwIfNotFound: true);
         m_Camera_RotateCamerQE = m_Camera.FindAction("RotateCamerQE", throwIfNotFound: true);
+        m_Camera_ZoomCin = m_Camera.FindAction("ZoomCin", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -566,6 +587,7 @@ public partial class @InputController: IInputActionCollection2, IDisposable
     private readonly InputAction m_Camera_RotateCamera;
     private readonly InputAction m_Camera_ZoomCamera;
     private readonly InputAction m_Camera_RotateCamerQE;
+    private readonly InputAction m_Camera_ZoomCin;
     public struct CameraActions
     {
         private @InputController m_Wrapper;
@@ -574,6 +596,7 @@ public partial class @InputController: IInputActionCollection2, IDisposable
         public InputAction @RotateCamera => m_Wrapper.m_Camera_RotateCamera;
         public InputAction @ZoomCamera => m_Wrapper.m_Camera_ZoomCamera;
         public InputAction @RotateCamerQE => m_Wrapper.m_Camera_RotateCamerQE;
+        public InputAction @ZoomCin => m_Wrapper.m_Camera_ZoomCin;
         public InputActionMap Get() { return m_Wrapper.m_Camera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -595,6 +618,9 @@ public partial class @InputController: IInputActionCollection2, IDisposable
             @RotateCamerQE.started += instance.OnRotateCamerQE;
             @RotateCamerQE.performed += instance.OnRotateCamerQE;
             @RotateCamerQE.canceled += instance.OnRotateCamerQE;
+            @ZoomCin.started += instance.OnZoomCin;
+            @ZoomCin.performed += instance.OnZoomCin;
+            @ZoomCin.canceled += instance.OnZoomCin;
         }
 
         private void UnregisterCallbacks(ICameraActions instance)
@@ -611,6 +637,9 @@ public partial class @InputController: IInputActionCollection2, IDisposable
             @RotateCamerQE.started -= instance.OnRotateCamerQE;
             @RotateCamerQE.performed -= instance.OnRotateCamerQE;
             @RotateCamerQE.canceled -= instance.OnRotateCamerQE;
+            @ZoomCin.started -= instance.OnZoomCin;
+            @ZoomCin.performed -= instance.OnZoomCin;
+            @ZoomCin.canceled -= instance.OnZoomCin;
         }
 
         public void RemoveCallbacks(ICameraActions instance)
@@ -647,5 +676,6 @@ public partial class @InputController: IInputActionCollection2, IDisposable
         void OnRotateCamera(InputAction.CallbackContext context);
         void OnZoomCamera(InputAction.CallbackContext context);
         void OnRotateCamerQE(InputAction.CallbackContext context);
+        void OnZoomCin(InputAction.CallbackContext context);
     }
 }

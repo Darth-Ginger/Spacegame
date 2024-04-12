@@ -1,14 +1,19 @@
 using System.Collections.Generic;
+using Spacegame;
 
-public class PathFinder
+
+namespace Spacegame.Gameplay.Pathfinding
 {
-    public PathFinder(Graph graph)
+    public class PathFinder
     {
+        public PathFinder(Graph graph)
+        {
 
-    }
+        }
 
-    public List<Node> FindPath(Node startNode, Node endNode, Graph graph)
-    {
-        return FindPath(startNode, endNode, graph);
+        public List<Node> FindPath(Node startNode, Node endNode, Graph graph)
+        {
+            return FindPath(startNode, endNode, graph);
+        }
     }
 }

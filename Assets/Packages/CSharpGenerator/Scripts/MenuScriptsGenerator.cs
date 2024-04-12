@@ -60,22 +60,22 @@ namespace Redcode.CreateMenuContext
             ProjectWindowUtil.CreateScriptAssetFromTemplateFile(templatePath, assetName);
         }
 
-        [MenuItem("Assets/Create/C# MonoBehaviour", priority = 60)]
+        [MenuItem("Assets/Create/Code Generator/C# MonoBehaviour", priority = 60)]
         private static void CreateScript() => CheckAndCreate("ScriptTemplate.txt", "NewBehaviourScript.cs");
 
-        [MenuItem("Assets/Create/C# ScriptableObject", priority = 61)]
+        [MenuItem("Assets/Create/Code Generator/C# ScriptableObject", priority = 61)]
         private static void CreateScriptableObject() => CheckAndCreate("ScriptableObjectTemplate.txt", "NewScriptableObject.cs");
 
-        [MenuItem("Assets/Create/C# Class", priority = 62)]
+        [MenuItem("Assets/Create/Code Generator/C# Class", priority = 62)]
         private static void CreateClass() => CheckAndCreate("ClassTemplate.txt", "NewClass.cs");
 
-        [MenuItem("Assets/Create/C# Struct", priority = 63)]
+        [MenuItem("Assets/Create/Code Generator/C# Struct", priority = 63)]
         private static void CreateStruct() => CheckAndCreate("StructTemplate.txt", "NewStruct.cs");
 
-        [MenuItem("Assets/Create/C# Interface", priority = 64)]
+        [MenuItem("Assets/Create/Code Generator/C# Interface", priority = 64)]
         private static void CreateInterface() => CheckAndCreate("InterfaceTemplate.txt", "NewInterface.cs");
 
-        [MenuItem("Assets/Create/C# Enum", priority = 65)]
+        [MenuItem("Assets/Create/Code Generator/C# Enum", priority = 65)]
         private static void CreateEnum() => CheckAndCreate("EnumTemplate.txt", "NewEnum.cs");
     }
 }

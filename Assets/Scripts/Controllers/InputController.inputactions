@@ -144,6 +144,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ZoomCin",
+                    "type": "PassThrough",
+                    "id": "1fab6fcb-24d6-4e35-b30b-81550fcc4b79",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -309,6 +318,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "RotateCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9fe186a4-3462-40ae-ae17-8084102fe729",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "Normalize(min=-1,max=1)",
+                    "groups": "",
+                    "action": "ZoomCin",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
