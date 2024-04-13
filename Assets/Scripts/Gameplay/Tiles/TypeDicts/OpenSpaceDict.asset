@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0437bef340e76f2448fcd4c55d82fdb2, type: 3}
   m_Name: OpenSpaceDict
   m_EditorClassIdentifier: 
+  BasePrefab: {fileID: 2246179887088978178, guid: f9fc0e913e8358a409806ce51d36b987, type: 3}
   TileList:
     _serializedList:
-    - Key: OpenSpace1
-      Value: {fileID: 3580599562537994390, guid: 34a5e52b97c6b4b468d26a526b498d7b, type: 3}
+    - Key: OpenSpace
+      Value: {fileID: 11400000, guid: 2265e5b8789aa0a40a09c2e04bc69e16, type: 2}

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityRandom = UnityEngine.Random;
 using NaughtyAttributes;
-using CustomInspector;
+
 using UnityEngine.Events;
 
 namespace Spacegame.Gameplay.Tiles
@@ -19,9 +19,11 @@ namespace Spacegame.Gameplay.Tiles
 		public  double 		CostModifier 	= 1d;
 		public  bool		Pathable		= true;			
 		public  bool		Visibility		= true;
-		public  GameObject 	GameObject; 
+		[ShowNonSerializedField] private  GameObject 	GameObject;
 		//@todo Add fields for Tile Properties or effects
 		public  UnityEvent TileEffects 	= null;
 
+		public void SetGameObject(GameObject gameObject) => GameObject = gameObject;
+		public GameObject GetGameObject() => GameObject;
 	}
 }
