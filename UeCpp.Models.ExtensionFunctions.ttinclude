@@ -1,0 +1,72 @@
+﻿<#@ import namespace="System.Linq" #>
+<#+
+	private void WriteExtensionFunctions(CodeGenerationContext context)
+	{
+
+#>/* # move to Public/<#= context.TargetLanguage.GameDataClassName #>FunctionLibrary.h */
+#pragma once
+<#+
+	WriteFileHeader();
+#>
+// ReSharper disable All
+
+#include "GameData/<#= context.TargetLanguage.DocumentClassName #>.h"
+#include "GameData/<#= context.TargetLanguage.DocumentReferenceClassName #>.h"
+#include "GameData/FLocalizedString.h"
+#include "GameData/EDocumentReferenceGetResult.h"
+<#+
+		foreach (var typeDef in context.ObjectModel.Types)
+		{
+#>#include "<#= typeDef #>.h"
+<#+
+		}
+		foreach (var enumDef in context.ObjectModel.Enums)
+		{
+#>#include "<#= enumDef #>.h"
+<#+
+		}
+		foreach (var formulaDef in context.ObjectModel.Formulas)
+		{
+#>#include "<#= formulaDef #>.h"
+<#+
+		}
+#>
+
+#include "<#= context.TargetLanguage.GameDataClassName #>FunctionLibrary.generated.h"
+
+/**
+  * Extension functions for generate <#= context.TargetLanguage.GameDataClassName #> class.
+  */
+UCLASS()
+class <#= context.CppLanguage.ApiName #> <#= context.TargetLanguage.GameDataClassName #>FunctionLibrary : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+
+<#+
+		foreach (var typeDef in context.ObjectModel.Types)
+		{
+#>
+	/*
+	 * Get <#= typeDef #> referenced in specified DocumentReference.
+	 */
+	UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Branches"))
+	static <#= typeDef #>* Get<#= UeCppLanguage.TrimTypePrefix(typeDef.ToString()) #>(FGameDataDocumentReference DocumentReference, EDocumentReferenceGetResult& Branches)
+	{
+		<#= typeDef #>* Document = Cast<<#= typeDef #>>(DocumentReference.GetReferencedDocument());
+		if (Document == nullptr)
+		{
+			Branches = EDocumentReferenceGetResult::NotFound;
+		}
+		else
+		{
+			Branches = EDocumentReferenceGetResult::Found;
+		}
+		return Document;
+	}
+<#+
+		}
+#>
+};
+<#+
+	}
+#>

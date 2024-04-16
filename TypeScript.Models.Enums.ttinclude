@@ -1,0 +1,29 @@
+﻿<#@ import namespace="System.Globalization" #>
+<#+
+	private void WriteEnum(EnumDefinition enumDef, CodeGenerationContext context)
+	{
+#>/**
+  * <#= enumDef #>. Flags: <#= enumDef.IsFlags #>.
+  */
+export enum <#= enumDef #> {
+<#+
+		const ulong MAX_SAFE_INTEGER = 9007199254740991UL;
+		const long MIN_SAFE_INTEGER = -9007199254740991L;
+		foreach (var kv in enumDef.Values)
+		{
+			var valueStr = Convert.ToString(kv.Value, CultureInfo.InvariantCulture);
+			var isNegative = valueStr.StartsWith("-", StringComparison.Ordinal);
+			if (isNegative ? Convert.ToInt64(kv.Value) < MIN_SAFE_INTEGER :
+					Convert.ToUInt64(kv.Value) > MAX_SAFE_INTEGER)
+			{
+				valueStr = "'" + valueStr + "'";
+			}
+#>
+		<#= kv.Key #> = <#= valueStr #>,
+<#+
+		}
+#>
+}
+<#+
+	}
+#>

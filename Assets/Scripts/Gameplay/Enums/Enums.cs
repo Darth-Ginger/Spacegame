@@ -64,6 +64,13 @@ namespace Spacegame.Gameplay
 		Condition       = 1 << 5,  // Instant condition (may be persistent)
 	}
 
+	public enum RepStatus
+	{
+		None,
+		Friend,
+		Enemy,
+		Neutral
+	}
 	public static class EnumManager
 	{
         public static T GetRandom<T>() where T : Enum

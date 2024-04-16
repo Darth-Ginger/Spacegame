@@ -1,0 +1,140 @@
+﻿<#@ import namespace="System.Globalization" #>
+<#+
+	private void WriteClass(TypeDefinition typeDef, CodeGenerationContext context)
+	{
+		if (!string.IsNullOrEmpty(typeDef.Description))
+		{
+#>/**
+  * <#= typeDef.Description #>.
+  */
+<#+
+		}
+#>
+export class <#= typeDef #> extends <#= context.TargetLanguage.DocumentClassName #> {
+
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			if (!context.RawReferences && propertyDef.DataType == DataType.ReferenceCollection)
+			{
+#>	/**
+	  * Document collection referenced in '<#= propertyDef.Name #>Raw'.
+	  */
+	public get <#= propertyDef.Name #>() : <#= propertyDef.TypeAfterDereference #> {
+		return this.<#= propertyDef.Name #>Raw.dereference();
+	}
+<#+
+			}
+			else if (!context.RawReferences && propertyDef.DataType == DataType.Reference)
+			{
+#>	/**
+	  * Document referenced in '<#= propertyDef.Name #>Raw'.
+	  */
+	public get <#= propertyDef.Name #>() : <#= propertyDef.TypeAfterDereference #> {
+		return (this.<#= propertyDef.Name #>Raw?.dereference() ?? null) as <#= propertyDef.TypeAfterDereference #>;
+	}
+<#+
+			}
+			else if (!context.RawLocalizedStrings && propertyDef.DataType == DataType.LocalizedText)
+			{
+#>
+	/**
+	  * Translation for '<#= propertyDef.Name #>Raw' in current selected language.
+	  */
+	public get <#= propertyDef.Name #>() : string {
+		return this.<#= propertyDef.Name #>Raw.value;
+	}
+<#+
+			}
+		}
+#>
+
+	constructor(
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			if (!string.IsNullOrEmpty(propertyDef.Description))
+			{
+#>		  /**
+			 * <#= propertyDef.Description #>.
+			 */
+<#+
+			}
+
+			if (!context.RawReferences && propertyDef.DataType == DataType.Reference)
+			{
+#>		  public readonly <#= propertyDef.Name #>Raw: <#= propertyDef.Type #>,
+<#+
+			}
+			else if (!context.RawReferences && propertyDef.DataType == DataType.ReferenceCollection)
+			{
+#>		  public readonly <#= propertyDef.Name #>Raw: <#= propertyDef.Type #>,
+<#+
+			}
+			else if (!context.RawLocalizedStrings && propertyDef.DataType == DataType.LocalizedText)
+			{
+#>		  public readonly <#= propertyDef.Name #>Raw: <#= propertyDef.Type #>,
+<#+
+			}
+			else
+			{
+#>		  public readonly <#= propertyDef.Name #>: <#= propertyDef.Type #>,
+<#+
+			}
+		}
+#>	)
+	{
+		super();
+
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			if (propertyDef.DataType == DataType.Document)
+			{
+#>			<#= context.TargetLanguage.DocumentClassName #>.setParent(this.<#= propertyDef.Name #>, this);
+<#+
+			}
+			else if (propertyDef.DataType == DataType.DocumentCollection)
+			{
+#>		this.<#= propertyDef.Name #>.asList.forEach(document => <#= context.TargetLanguage.DocumentClassName #>.setParent(document, this));
+<#+
+			}
+		}
+#>
+	}
+
+	public toString()
+	{
+		let result = '';
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			var propertyDisplayName = propertyDef.DisplayName.Replace("\"", "\\\"").Replace("\\", "\\\\");
+			if (!context.RawReferences && (propertyDef.DataType == DataType.ReferenceCollection || propertyDef.DataType == DataType.Reference))
+			{
+#>			result += '<#= propertyDisplayName #>: ' + this.<#= propertyDef.Name #>Raw + ', ';
+<#+
+			}
+			else if (!context.RawLocalizedStrings && propertyDef.DataType == DataType.LocalizedText)
+			{
+#>			result += '<#= propertyDisplayName #>: ' + this.<#= propertyDef.Name #>Raw + ', ';
+<#+
+			}
+			else
+			{
+#>			result += '<#= propertyDisplayName #>: ' + this.<#= propertyDef.Name #> + ', ';
+<#+
+			}
+		}
+#>
+
+		if (result.length > 2)
+		{
+			result = result.substring(0, result.length - 2);
+		}
+		return result;
+	}
+}
+<#+
+	}
+#>

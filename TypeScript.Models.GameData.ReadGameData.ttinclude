@@ -1,0 +1,303 @@
+﻿<#+
+	private void WriteReadGameDataCode(CodeGenerationContext context)
+	{
+#>
+		public createReader(gameDataStream: BufferSource | ArrayLike<number>,
+			 options: Readonly<Partial<Formatters.GameDataLoadOptions>>): Formatters.GameDataReader
+		{
+			check(gameDataStream, 'gameDataStream').is.not.nullOrUndefined();
+			check(options, 'options').is.not.nullOrUndefined();
+
+			const format = options.format ?? Formatters.GameDataFormat.Json;
+			switch (format)
+			{
+<#+
+		if (context.DisableJsonSerialization == false)
+		{
+#>				case Formatters.GameDataFormat.Json: return new Formatters.JsonGameDataReader(gameDataStream);
+<#+
+		}
+		if (context.DisableMessagePackSerialization == false)
+		{
+#>				case Formatters.GameDataFormat.MessagePack: return new Formatters.MessagePackGameDataReader(gameDataStream);
+<#+
+		}
+#>
+				default: throw new Error(`Unknown/Unsupported data format specified '${options.format}'.`);
+			}
+		}
+
+		public readGameData(gameDataDocument: object): void {
+			check(gameDataDocument, 'gameDataDocument').is.object().and.not.nullOrUndefined();
+
+			if ('ChangeNumber' in gameDataDocument) {
+				this.changeNumber = coerceTo(gameDataDocument['ChangeNumber'], 'number');
+			}
+			if ('RevisionHash' in gameDataDocument) {
+				this.revisionHash = coerceTo(gameDataDocument['RevisionHash'], 'string');
+			}
+
+			let collections: { readonly [schemaName: string]: ReadonlyArray<object> | object } = {};
+			if ('Collections' in gameDataDocument &&
+				typeof (gameDataDocument['Collections']) === 'object') {
+				collections = gameDataDocument['Collections'] as typeof collections;
+			}
+
+			for (const schemaName in collections) {
+				if (!Object.prototype.hasOwnProperty.call(collections, schemaName)) {
+					continue;
+				}
+
+				const documentArrayOrMap = collections[schemaName];
+				switch (schemaName) {
+<#+
+		foreach (var typeDef in context.ObjectModel.Types)
+		{
+#>
+					case '<#= typeDef.Schema.Id #>':
+					case '<#= typeDef.Schema.Name #>':
+						this.rootDocuments.<#= typeDef.CollectionName #> = this.read<#= typeDef.Schema.Name #>Collection(documentArrayOrMap);
+						break;
+<#+
+		}
+#>
+				}
+			}
+		}
+
+		private updateLanguageSettings(): void
+		{
+			const projectSettings = this.rootDocuments.projectSettings.asList[0];
+			if (!projectSettings || !projectSettings.languages) {
+				return;
+			}
+
+			const allLanguages = (projectSettings.languages ?? '').split(/[;,|\s]/)
+			if (projectSettings.primaryLanguage) {
+				this.languageSwitcher.primaryLanguageId = projectSettings.primaryLanguage;
+			} else if (allLanguages.length > 0) {
+				this.languageSwitcher.primaryLanguageId = allLanguages[0];
+			} else {
+				this.languageSwitcher.primaryLanguageId = 'en-US';
+			}
+			this.languageSwitcher.currentLanguageId = this.languageSwitcher.fallbackLanguageId = this.languageSwitcher.primaryLanguageId;
+			if (allLanguages.indexOf(this.languageSwitcher.currentLanguageId) < 0) {
+				allLanguages.push(this.languageSwitcher.currentLanguageId);
+			}
+			allLanguages.sort();
+			this.languages = allLanguages;
+		}
+<#+
+		foreach (var typeDef in context.ObjectModel.Types)
+		{
+#>
+		private read<#= typeDef.Schema.Name #>Collection(documentArrayOrMap: any): <#= typeDef.CollectionType #> {
+			let documentList: ReadonlyArray<object | null>;
+			if (typeof documentArrayOrMap === 'object' && documentArrayOrMap !== null) {
+				documentList = Object.values(documentArrayOrMap) as typeof documentList;
+			} else if (Array.isArray(documentArrayOrMap)) {
+				documentList = documentArrayOrMap as typeof documentList;
+			} else {
+				return <#= context.TargetLanguage.DocumentCollectionClassName #>.empty;
+			}
+			const collection: <#= typeDef #>[] = [];
+			for (const document of documentList) {
+				if (!document) {
+					continue;
+				}
+				collection.push(this.read<#= typeDef.Schema.Name #>Document(document));
+			}
+
+			return new <#= context.TargetLanguage.DocumentCollectionClassName #>(collection, 'id');
+
+		}
+
+		private read<#= typeDef.Schema.Name #>Document(document: object): <#= typeDef #>;
+		private read<#= typeDef.Schema.Name #>Document(document: null): null;
+		private read<#= typeDef.Schema.Name #>Document(document: any): <#= typeDef #> | null;
+		private read<#= typeDef.Schema.Name #>Document(document: any): <#= typeDef #> | null {
+			if (!document) {
+				return null;
+			}
+<#+
+			foreach (var propertyDef in typeDef.Properties)
+			{
+				switch (propertyDef.DataType)
+				{
+					case DataType.Document:
+
+#>
+			const _<#= propertyDef.BackingField.Name #> = '<#= propertyDef.SchemaProperty.Name #>' in document ? this.read<#= propertyDef.SchemaProperty.ReferenceType.Schema.Name #>Document(document['<#= propertyDef.SchemaProperty.Name #>']) : null;
+<#+
+						break;
+					case DataType.DocumentCollection:
+#>
+			const _<#= propertyDef.BackingField.Name #> = '<#= propertyDef.SchemaProperty.Name #>' in document ? this.read<#= propertyDef.SchemaProperty.ReferenceType.Schema.Name #>Collection(document['<#= propertyDef.SchemaProperty.Name #>']) : <#= context.TargetLanguage.DocumentCollectionClassName #>.empty;
+<#+
+						break;
+					case DataType.Reference:
+#>
+			const _<#= propertyDef.BackingField.Name #> = '<#= propertyDef.SchemaProperty.Name #>' in document ? this.readDocumentReference<<#= propertyDef.DocumentOrReferenceType #>>(document['<#= propertyDef.SchemaProperty.Name #>'], "<#= propertyDef.SchemaProperty.ReferenceType.Schema.Name #>", this.findDocument) : null;
+<#+
+						break;
+					case DataType.ReferenceCollection:
+#>
+			const _<#= propertyDef.BackingField.Name #> = '<#= propertyDef.SchemaProperty.Name #>' in document ? this.readDocumentReferenceCollection<<#= propertyDef.DocumentOrReferenceType #>>(document['<#= propertyDef.SchemaProperty.Name #>'], "<#= propertyDef.SchemaProperty.ReferenceType.Schema.Name #>", this.findDocument) : <#= context.TargetLanguage.DocumentReferenceListClassName #>.empty;
+<#+
+						break;
+					case DataType.Formula:
+						if (propertyDef.SchemaProperty.IsRawFormulaType)
+						{
+#>
+			const _<#= propertyDef.BackingField.Name #> = '<#= propertyDef.SchemaProperty.Name #>' in document ? document['<#= propertyDef.SchemaProperty.Name #>'] : null;
+<#+
+						}
+						else
+						{
+#>
+			const _<#= propertyDef.BackingField.Name #> = '<#= propertyDef.SchemaProperty.Name #>' in document ? this.readFormula(document['<#= propertyDef.SchemaProperty.Name #>'], <#= propertyDef.StorageType #>) : null;
+<#+
+						}
+						break;
+					case DataType.LocalizedText:
+#>
+			const _<#= propertyDef.BackingField.Name #> = '<#= propertyDef.SchemaProperty.Name #>' in document ? this.readLocalizedString(document['<#= propertyDef.SchemaProperty.Name #>'], this.languageSwitcher) : LocalizedString.empty;
+<#+
+						break;
+					default:
+						if (propertyDef.SchemaProperty.DataType == DataType.PickList ||
+							propertyDef.SchemaProperty.DataType == DataType.MultiPickList)
+						{
+#>
+			const _<#= propertyDef.BackingField.Name #> = '<#= propertyDef.SchemaProperty.Name #>' in document ? coerceToEnum(document['<#= propertyDef.SchemaProperty.Name #>'], <#= propertyDef.StorageType #>) as <#= propertyDef.StorageType #> : null;
+<#+
+						}
+						else
+						{
+#>
+			const _<#= propertyDef.BackingField.Name #> = '<#= propertyDef.SchemaProperty.Name #>' in document ? coerceTo(document['<#= propertyDef.SchemaProperty.Name #>'], '<#= propertyDef.StorageType #>') : null;
+<#+
+						}
+						break;
+				}
+			}
+#>
+
+			const __<#= typeDef #> = new <#= typeDef #>(
+<#+
+			foreach (var propertyDef in typeDef.Properties)
+			{
+				if (propertyDef.SchemaProperty.Requirement != Requirement.None)
+				{
+#>
+				_<#= propertyDef.BackingField.Name #> ?? this.throwPropertyNull('<#= propertyDef.SchemaProperty.Name #>', '<#= typeDef #>', 'Id' in document ? document['Id'] : null),
+<#+
+				}
+				else
+				{
+#>
+				_<#= propertyDef.BackingField.Name #>,
+<#+
+				}
+			}
+#>
+			);
+<#+
+			foreach (var propertyDef in typeDef.Properties)
+			{
+				if (propertyDef.DataType == DataType.Formula && !propertyDef.SchemaProperty.IsRawFormulaType)
+				{
+#>			if (__<#= typeDef #>.<#= propertyDef.Name #>) {
+				__<#= typeDef #>.<#= propertyDef.Name #>.context['this'] = __<#= typeDef #>;
+			}
+<#+
+				}
+			}
+#>
+			return __<#= typeDef #>;
+		}
+<#+
+		}
+#>
+		private readFormula<FormulaT>(expressionObj: any, formulaConstructor: (new (expressionObj: any) => FormulaT)): FormulaT | null {
+			if (typeof expressionObj !== 'object') {
+				return null;
+			}
+			return new formulaConstructor(expressionObj);
+		}
+
+		private readLocalizedString(localizedStringObj: any, languageSwitcher: <#= context.TargetLanguage.LocalizedStringClassName #>.LanguageSwitcher): <#= context.TargetLanguage.LocalizedStringClassName #> {
+			check(languageSwitcher, 'languageSwitcher').is.object().not.nullOrUndefined();
+
+			if (typeof (localizedStringObj) !== 'object') {
+				return <#= context.TargetLanguage.LocalizedStringClassName #>.empty;
+			}
+
+			const textByLanguage = new Map<string, string | null>();
+			for (const languageId in localizedStringObj) {
+				if (!Object.prototype.hasOwnProperty.call(localizedStringObj, languageId)) {
+					continue;
+				}
+				const text = localizedStringObj[languageId];
+				if (!languageId || !text ||
+					typeof (languageId) !== 'string' || typeof (text) !== 'string' ||
+					languageId === 'notes') {
+					continue;
+				}
+				textByLanguage.set(languageId, text);
+			}
+			return new <#= context.TargetLanguage.LocalizedStringClassName #>(textByLanguage, languageSwitcher);
+		}
+		private readDocumentReferenceCollection<DocumentT extends <#= context.TargetLanguage.DocumentClassName #> | null>(
+			referenceArrayOrMap: any,
+			schemaIdOrName: string,
+			findDocument: typeof this.findDocument
+		): <#= context.TargetLanguage.DocumentReferenceListClassName #><Exclude<DocumentT, null>> {
+
+			check(findDocument, 'findDocument').is.function().not.nullOrUndefined();
+			check(schemaIdOrName, 'schemaIdOrName').is.string().not.nullOrUndefined();
+
+			let documentReferenceList: ReadonlyArray<object | null>;
+			if (typeof referenceArrayOrMap === 'object' && referenceArrayOrMap !== null) {
+				documentReferenceList = Object.values(referenceArrayOrMap) as typeof documentReferenceList;
+			} else if (Array.isArray(referenceArrayOrMap)) {
+				documentReferenceList = referenceArrayOrMap as typeof documentReferenceList;
+			} else {
+				return <#= context.TargetLanguage.DocumentReferenceListClassName #>.empty;
+			}
+
+			const collection: <#= context.TargetLanguage.DocumentReferenceClassName #><Exclude<DocumentT, null>>[] = [];
+			for (const documentReference of documentReferenceList) {
+				const reference = this.readDocumentReference<DocumentT>(
+					documentReference, schemaIdOrName, findDocument
+				);
+				if (!reference) {
+					continue;
+				}
+				collection.push(reference);
+			}
+			return new <#= context.TargetLanguage.DocumentReferenceListClassName #>(collection);
+		}
+		private readDocumentReference<DocumentT extends <#= context.TargetLanguage.DocumentClassName #> | null>(
+			documentReference: any,
+			schemaIdOrName: string,
+			findDocument: typeof this.findDocument
+		): <#= context.TargetLanguage.DocumentReferenceClassName #><Exclude<DocumentT, null>> | null {
+
+			check(findDocument, 'findDocument').is.function().not.nullOrUndefined();
+			check(schemaIdOrName, 'schemaIdOrName').is.string().not.nullOrUndefined();
+
+			if (!documentReference || typeof (documentReference) != 'object' || !('Id' in documentReference)) {
+				return null;
+			}
+			const id = documentReference['Id'];
+			const reference = new <#= context.TargetLanguage.DocumentReferenceClassName #><Exclude<DocumentT, null>>(id, schemaIdOrName, findDocument);
+			return reference;
+		}
+
+		private throwPropertyNull(propertyName: string, typeName: string, id?: string | null): never {
+			throw new Error(`Missing required property '${propertyName}' on document of '${typeName}'[id: ${id}] type.`);
+		}
+<#+
+	}
+#>

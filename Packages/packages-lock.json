@@ -13,6 +13,14 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.beetlecircus.scriptableobjectwindow": {
+      "version": "file:com.beetlecircus.scriptableobjectwindow",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      }
+    },
     "com.unity.2d.animation": {
       "version": "9.1.0",
       "depth": 1,

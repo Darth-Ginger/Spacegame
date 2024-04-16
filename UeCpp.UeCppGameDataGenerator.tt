@@ -1,0 +1,22 @@
+﻿<#@ template language="C#" #>
+<#@ include file="./UeCppGameData.ttinclude" once="true" #>
+<#@ output extension=".cs" encoding="utf-8" #>
+<#+
+	public string GameDataPath { get; set; }
+	public string Namespace { get; set; }
+	public string GameDataClassName { get; set; }
+	public string DocumentClassName { get; set; }
+	public SourceCodeGenerationOptimizations[] Optimizations { get; set; }
+
+	public enum SourceCodeGenerationOptimizations
+	{
+		EagerReferenceResolution = 0,
+		RawReferences = 1,
+		RawLocalizedStrings = 2,
+		DisableStringPooling = 3,
+		DisableJsonSerialization = 4,
+		DisableMessagePackSerialization = 5,
+		DisablePatching = 6,
+		DisableFormulaCompilation = 7,
+	}
+#>

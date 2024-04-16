@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df7544b265b2e124d9bd9299e84bfe42, type: 3}
-  m_Name: NewCard
+  m_Script: {fileID: 11500000, guid: 3342128619bc0354495f9c9bd3db918f, type: 3}
+  m_Name: SampleWeapon
   m_EditorClassIdentifier: 
-  _cardName: 
-  _cardDescription: 
-  _cardCost: 5
-  _cardRank: 1
-  _targetType: 14
-  Effects: []
+  weaponName: Good Gun
+  attack: 2
+  defense: 1

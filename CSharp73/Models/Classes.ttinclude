@@ -1,0 +1,252 @@
+﻿<#@ import namespace="System.Globalization" #>
+<#+
+	private void WriteClass(TypeDefinition typeDef, CodeGenerationContext context)
+	{
+		if (!string.IsNullOrEmpty(typeDef.Description))
+		{
+#>	/// <summary>
+	/// <#= typeDef.Description #>.
+	/// </summary>
+<#+
+		}
+#>
+	[GeneratedCode(<#= context.TargetLanguage.GameDataClassName #>.GeneratorName, <#= context.TargetLanguage.GameDataClassName #>.GeneratorVersion)]
+	public sealed partial class <#= typeDef #> : <#= context.TargetLanguage.DocumentClassName #>, IEquatable<<#= typeDef #>>, IComparable, IComparable<<#= typeDef #>>
+	{
+		private readonly int hashCode;
+
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			if (!string.IsNullOrEmpty(propertyDef.Description))
+			{
+#>		/// <summary>
+		/// <#= propertyDef.Description #>.
+		/// </summary>
+<#+
+			}
+
+			if (!context.RawReferences && propertyDef.DataType == DataType.Reference)
+			{
+#>		public <#= propertyDef.TypeAfterDereference #> <#= propertyDef.Name #> => this.<#= propertyDef.Name #>Raw?.Dereference();
+		public <#= propertyDef.Type #> <#= propertyDef.Name #>Raw { get; }
+<#+
+			}
+			else if (!context.RawReferences && propertyDef.DataType == DataType.ReferenceCollection)
+			{
+#>		public <#= propertyDef.TypeAfterDereference #> <#= propertyDef.Name #> => this.<#= propertyDef.Name #>Raw.Dereference(document => document.Id);
+		public <#= propertyDef.Type #> <#= propertyDef.Name #>Raw { get; }
+<#+
+			}
+			else if (!context.RawLocalizedStrings && propertyDef.DataType == DataType.LocalizedText)
+			{
+#>		public string <#= propertyDef.Name #> => this.<#= propertyDef.Name #>Raw.Value;
+		public <#= propertyDef.Type #> <#= propertyDef.Name #>Raw { get; }
+<#+
+			}
+			else
+			{
+#>		public <#= propertyDef.Type #> <#= propertyDef.Name #> { get; }
+<#+
+			}
+		}
+
+		var constructorArguments = string.Join(", ", typeDef.Properties.Select(p => p.MethodParameter.Type + " " + p.MethodParameter.Name));
+#>
+		/// <summary>
+		/// Constructor for <#= typeDef #>.
+		/// </summary>
+		public <#= typeDef #>(<#= constructorArguments #>)
+		{
+			this.OnBeforeInitialize();
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			if (!context.RawReferences && (propertyDef.DataType == DataType.ReferenceCollection || propertyDef.DataType == DataType.Reference))
+			{
+#>			this.<#= propertyDef.Name #>Raw = <#= propertyDef.MethodParameter.Name #>;
+<#+
+			}
+			else if (!context.RawLocalizedStrings && propertyDef.DataType == DataType.LocalizedText)
+			{
+#>			this.<#= propertyDef.Name #>Raw = <#= propertyDef.MethodParameter.Name #>;
+<#+
+			}
+			else
+			{
+#>			this.<#= propertyDef.Name #> = <#= propertyDef.MethodParameter.Name #>;
+<#+
+			}
+		}
+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			if (propertyDef.DataType == DataType.Document)
+			{
+#>			SetParent(this.<#= propertyDef.Name #>, this);
+<#+
+			}
+			else if (propertyDef.DataType == DataType.DocumentCollection)
+			{
+#>			foreach (var document in this.<#= propertyDef.Name #>.AsList) { SetParent(document, this); }
+<#+
+			}
+		}
+#>
+			this.hashCode = this.ComputeHashCode();
+			this.OnInitialize();
+		}
+
+		partial void OnBeforeInitialize();
+		partial void OnInitialize();
+
+		/// <inheritdoc />
+		public bool Equals(<#= typeDef #> other)
+		{
+			return this.Equals((object)other);
+		}
+		/// <inheritdoc />
+		public override bool Equals(object value)
+		{
+			if (value is <#= typeDef #> == false)
+			{
+				return false;
+			}
+			else if (ReferenceEquals(this, value))
+			{
+				return true;
+			}
+			else if (ReferenceEquals(value, null))
+			{
+				return false;
+			}
+
+			var other = (<#= typeDef #>)value;
+			return (this.GetHashCode() == other.GetHashCode()
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			if (!context.RawReferences && (propertyDef.DataType == DataType.ReferenceCollection || propertyDef.DataType == DataType.Reference))
+			{
+#>				&& AreEquals(this.<#= propertyDef.Name #>Raw, other.<#= propertyDef.Name #>Raw)
+<#+
+			}
+			else if (!context.RawLocalizedStrings && propertyDef.DataType == DataType.LocalizedText)
+			{
+#>				&& AreEquals(this.<#= propertyDef.Name #>Raw, other.<#= propertyDef.Name #>Raw)
+<#+
+			}
+			else
+			{
+#>				&& AreEquals(this.<#= propertyDef.Name #>, other.<#= propertyDef.Name #>)
+<#+
+			}
+		}
+#>			);
+		}
+		/// <inheritdoc />
+		public override int GetHashCode()
+		{
+			return this.hashCode;
+		}
+
+		/// <inheritdoc />
+		int IComparable.CompareTo(object obj)
+		{
+			return this.CompareTo(obj as <#= typeDef #>);
+		}
+		/// <inheritdoc />
+		public int CompareTo(<#= typeDef #> other)
+		{
+			if (ReferenceEquals(other, null))
+			{
+				return 1;
+			}
+<#+
+		if (typeDef.IdMember.DataType == DataType.Text)
+		{
+#>
+			return string.Compare(this.Id, other.Id, StringComparison.Ordinal);
+<#+
+		}
+		else
+		{
+#>
+			return this.Id.CompareTo(other.Id);
+<#+
+		}
+#>
+		}
+
+		public static bool operator ==(<#= typeDef #> value1, <#= typeDef #> value2)
+		{
+			return Equals(value1, value2);
+		}
+		public static bool operator !=(<#= typeDef #> value1, <#= typeDef #> value2)
+		{
+			return Equals(value1, value2) == false;
+		}
+
+		private int ComputeHashCode()
+		{
+			return unchecked(this.GetType().Name.GetHashCode()
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			if (!context.RawReferences && (propertyDef.DataType == DataType.ReferenceCollection || propertyDef.DataType == DataType.Reference))
+			{
+#>				+ GetHashCodeFor(this.<#= propertyDef.Name #>Raw)
+<#+
+			}
+			else if (!context.RawLocalizedStrings && propertyDef.DataType == DataType.LocalizedText)
+			{
+#>				+ GetHashCodeFor(this.<#= propertyDef.Name #>Raw)
+<#+
+			}
+			else
+			{
+#>				+ GetHashCodeFor(this.<#= propertyDef.Name #>)
+<#+
+			}
+		}
+#>
+			);
+		}
+
+		/// <inheritdoc />
+		public override string ToString()
+		{
+			var sb = new System.Text.StringBuilder();
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			var propertyDisplayName = propertyDef.DisplayName.Replace("\"", "\\\"").Replace("\\", "\\\\");
+
+			if (!context.RawReferences && (propertyDef.DataType == DataType.ReferenceCollection || propertyDef.DataType == DataType.Reference))
+			{
+#>				sb.Append("<#= propertyDisplayName #>: ").Append(this.<#= propertyDef.Name #>Raw).Append(", ");
+<#+
+			}
+			else if (!context.RawLocalizedStrings && propertyDef.DataType == DataType.LocalizedText)
+			{
+#>				sb.Append("<#= propertyDisplayName #>: ").Append(this.<#= propertyDef.Name #>Raw).Append(", ");
+<#+
+			}
+			else
+			{
+#>				sb.Append("<#= propertyDisplayName #>: ").Append(this.<#= propertyDef.Name #>).Append(", ");
+<#+
+			}
+		}
+#>
+
+			if (sb.Length > 2)
+			{
+				sb.Length -= 2;
+			}
+			return sb.ToString();
+		}
+	}
+<#+
+	}
+#>

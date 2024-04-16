@@ -1,0 +1,26 @@
+{
+  "name": "com.beetlecircus.scriptableobjectwindow",
+  "version": "0.1.2",
+  "displayName": "ScriptableObjectWindow",
+  "description": "ScriptableObjectWindow developed by BeetleCircus",
+  "unity": "2019.4",
+  "dependencies": {
+    "com.unity.ugui": "1.0.0"
+  },
+  "keywords": [
+    "ScriptableObject",
+    "window"
+  ],
+  "author": {
+    "name": "Fredrik Ludvigsen",
+    "email": "post@fredrik.ludvigsen.name"
+  },
+  "samples": [
+    {
+      "displayName": "Example usage",
+      "description": "Shows how to link scriptable objects to scenes.",
+      "path": "Samples~"
+    }
+  ]
+}
+

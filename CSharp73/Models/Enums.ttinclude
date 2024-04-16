@@ -1,0 +1,24 @@
+﻿<#@ import namespace="System.Globalization" #>
+<#+
+	private void WriteEnum(EnumDefinition enumDef, CodeGenerationContext context)
+	{
+		if (enumDef.IsFlags)
+		{
+#>	[Flags]
+<#+
+		}
+#>	[GeneratedCode(<#= context.TargetLanguage.GameDataClassName #>.GeneratorName, <#= context.TargetLanguage.GameDataClassName #>.GeneratorVersion)]
+	public enum <#= enumDef #>: <#= enumDef.BaseType #>
+	{
+<#+
+		foreach (var kv in enumDef.Values)
+		{
+#>
+		<#= kv.Key #> = <#= Convert.ToString(kv.Value, CultureInfo.InvariantCulture) #>,
+<#+
+		}
+#>
+	}
+<#+
+	}
+#>

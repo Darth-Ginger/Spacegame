@@ -1,0 +1,209 @@
+﻿<#@ import namespace="System.Linq" #>
+<#+
+	private void WriteClassHeader(TypeDefinition typeDef, CodeGenerationContext context)
+	{
+		var idPropertyDef = typeDef.Properties.FirstOrDefault(propDef => propDef.Name == "Id");
+
+#>/* # move to Public/<#= typeDef #>.h */
+#pragma once
+<#+
+	WriteFileHeader();
+#>
+// ReSharper disable All
+
+#include "GameData/<#= context.TargetLanguage.DocumentClassName #>.h"
+#include "GameData/<#= context.TargetLanguage.DocumentReferenceClassName #>.h"
+#include "GameData/FLocalizedString.h"
+
+<#+
+		foreach (var typeRef in typeDef.GetReferenceTypes().Where(typeRef => typeRef is EnumDefinition || typeRef is FormulaDefinition))
+		{
+#>#include "<#= typeRef #>.h"
+<#+
+		}
+#>
+#include "<#= typeDef #>.generated.h"
+
+<#+
+		foreach (var typeRef in typeDef.GetReferenceTypes().Where(typeRef => typeRef is TypeDefinition))
+		{
+			if (ReferenceEquals(typeRef, typeDef))
+			{
+				continue;
+			}
+#>class <#= typeRef #>; // forward declaration
+<#+
+		}
+#>
+
+/**
+  * <#= typeDef.Description ?? string.Empty #>
+  */
+UCLASS(BlueprintType)
+class <#= context.CppLanguage.ApiName #> <#= typeDef #> : public <#= context.TargetLanguage.DocumentClassName #>
+{
+	GENERATED_BODY()
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+
+			if (!context.RawReferences && propertyDef.DataType == DataType.ReferenceCollection)
+			{
+#>
+	/**
+	  * De-referenced collection of documents for <#= propertyDef.Name #>. Should not be directly used.
+	  */
+	<#= propertyDef.TypeAfterDereference #> <#= propertyDef.BackingField.Name #>Documents;
+<#+
+			}
+			else if (!context.RawReferences && propertyDef.DataType == DataType.Reference)
+			{
+#>
+	/**
+	  * De-referenced document of <#= propertyDef.Name #>. Should not be directly used.
+	  */
+	<#= propertyDef.TypeAfterDereference #>* <#= propertyDef.BackingField.Name #>Document;
+<#+
+			}
+		}
+#>
+public:
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			if (!string.IsNullOrEmpty(propertyDef.Description))
+			{
+#>
+	/**
+	  * <#= propertyDef.Description #>
+	  */
+<#+
+			}
+			if (!context.RawReferences && propertyDef.DataType == DataType.Reference)
+			{
+#>
+	UFUNCTION(BlueprintCallable)
+	<#= propertyDef.TypeAfterDereference #>* Get<#= propertyDef.Name #>();
+	/**
+	  * Raw value of <#= propertyDef.Name #>.
+	  */
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	<#= propertyDef.Type #> <#= propertyDef.Name #>Raw;
+<#+
+			}
+			else if (context.RawReferences && propertyDef.DataType == DataType.ReferenceCollection)
+			{
+#>
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	<#= propertyDef.Type #> <#= propertyDef.Name #>;
+<#+
+			}
+			else if (!context.RawReferences && propertyDef.DataType == DataType.ReferenceCollection)
+			{
+#>
+	UFUNCTION(BlueprintCallable)
+	<#= propertyDef.TypeAfterDereference #> Get<#= propertyDef.Name #>();
+	/**
+	  * Raw value of <#= propertyDef.Name #>.
+	  */
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	<#= propertyDef.Type #> <#= propertyDef.Name #>Raw;
+<#+
+			}
+			else if (context.RawReferences && propertyDef.DataType == DataType.ReferenceCollection)
+			{
+#>
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	<#= propertyDef.Type #> <#= propertyDef.Name #>;
+<#+
+			}
+			else if (!context.RawLocalizedStrings && propertyDef.DataType == DataType.LocalizedText)
+			{
+#>
+	UFUNCTION(BlueprintCallable)
+	FText Get<#= propertyDef.Name #>();
+	/**
+	  * Raw value of <#= propertyDef.Name #>.
+	  */
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	<#= propertyDef.Type #> <#= propertyDef.Name #>Raw;
+<#+
+			}
+			else if (propertyDef.DataType == DataType.Formula && propertyDef.SchemaProperty.IsRawFormulaType)
+			{
+#>
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	<#= propertyDef.Type #> <#= propertyDef.Name #>;
+<#+
+			}
+			else if (propertyDef.DataType == DataType.Formula)
+			{
+#>
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	<#= propertyDef.Type #>* <#= propertyDef.Name #>;
+<#+
+			}
+			else
+			{
+#>
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	<#= propertyDef.Type #> <#= propertyDef.Name #>;
+<#+
+			}
+		}
+#>
+};
+<#+
+	}
+
+	private void WriteClassImplementation(TypeDefinition typeDef, CodeGenerationContext context)
+	{
+#>/* # move to Private/<#= typeDef #>.cpp */
+// ReSharper disable All
+
+#include "<#= typeDef #>.h"
+<#+
+		foreach (var typeRef in typeDef.GetReferenceTypes().Where(typeRef => typeRef is TypeDefinition || typeRef is FormulaDefinition))
+		{
+			if (ReferenceEquals(typeRef, typeDef))
+			{
+				continue;
+			}
+
+#>#include "<#= typeRef #>.h"
+<#+
+		}
+#>
+
+<#+
+		foreach (var propertyDef in typeDef.Properties)
+		{
+			if (!context.RawReferences && propertyDef.DataType == DataType.Reference)
+			{
+#>
+<#= propertyDef.TypeAfterDereference #>* <#= typeDef #>::Get<#= propertyDef.Name #>() {
+		<#= context.TargetLanguage.DocumentReferenceClassName #>::GetReferencedDocument(<#= propertyDef.Name #>Raw, <#= propertyDef.BackingField.Name #>Document);
+		return <#= propertyDef.BackingField.Name #>Document;
+}
+<#+
+			}
+			else if (!context.RawReferences && propertyDef.DataType == DataType.ReferenceCollection)
+			{
+#>
+<#= propertyDef.TypeAfterDereference #> <#= typeDef #>::Get<#= propertyDef.Name #>() {
+	<#= context.TargetLanguage.DocumentReferenceClassName #>::GetReferencedDocuments(<#= propertyDef.Name #>Raw, <#= propertyDef.BackingField.Name #>Documents);
+	return <#= propertyDef.BackingField.Name #>Documents;
+}
+<#+
+			}
+			else if (!context.RawLocalizedStrings && propertyDef.DataType == DataType.LocalizedText)
+			{
+#>
+FText <#= typeDef #>::Get<#= propertyDef.Name #>() {
+	return <#= propertyDef.Name #>Raw.GetCurrent();
+}
+<#+
+			}
+		}
+	}
+#>

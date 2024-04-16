@@ -1134,7 +1134,7 @@ MonoBehaviour:
       icon: {fileID: 0}
     progressBarAttributeExamples:
       value1: 0.6
-      value2: 22
+      value2: 72
       value3: 2
       min: 1
       max: 3
@@ -1170,7 +1170,7 @@ MonoBehaviour:
         amount: 10
       testClass:
         id: 432564
-        value: 0
+        value: 0.678
     showIfAttributeExamples:
       customColors: 0
       headColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1229,16 +1229,16 @@ MonoBehaviour:
         - 3
     tagAttributeExamples:
       tag1: Player
-      tag2: 
+      tag2: Player
     titleAttributeExamples:
       b1: 0
       _: 0
       b2: 0
     toolbarAttributeExamples:
       edit: 0
-      create: 0
+      create: 1
       animal: 0
-      type: 0
+      type: 3
     tooltipBoxAttributeExamples:
       myGameObject: {fileID: 0}
       myFloat: 0
@@ -1327,8 +1327,8 @@ MonoBehaviour:
         path: Assets
         assetReference: {fileID: 0}
       path2:
-        path: <invalid>
-        assetReference: {fileID: 0}
+        path: Assets/Gamelogic/Extensions/Plugins/Scripts/Algorithms
+        assetReference: {fileID: 102900000, guid: 55f2343c6a83c0345ba7e63a8484e887, type: 3}
       path3:
         path: Assets/Trash
         assetReference: {fileID: 0}
@@ -1339,9 +1339,9 @@ MonoBehaviour:
       ak47_damage:
         _: 0
         points:
-        - {x: 10, y: 50}
-        - {x: 20, y: 20}
-        - {x: 50, y: 10}
+        - {x: 11.542037, y: 0.32566473}
+        - {x: 31.294256, y: 0.45939508}
+        - {x: 47.253002, y: 0.45513538}
         - {x: 50, y: 0}
     listContainerExamples:
       visible: 1
