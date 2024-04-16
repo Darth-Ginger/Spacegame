@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1148919455530665997, guid: f9fc0e913e8358a409806ce51d36b987, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8b1a62472b7082d41b3b269e372452f9, type: 2}
     - target: {fileID: 2246179887088978178, guid: f9fc0e913e8358a409806ce51d36b987, type: 3}
       propertyPath: m_Name
       value: OpenSpace_Tile

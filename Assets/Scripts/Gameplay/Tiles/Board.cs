@@ -112,7 +112,7 @@ namespace Spacegame.Gameplay
             //}
 
 
-            transform.Find("Rig").position = Graph.GetNode("(0,0)").GridPositionToWorld() + new Vector3(0, 0, 1f);
+            transform.Find("Rig").position = Graph.GetNode(new Vector2(0,0)).GridPositionToWorld() + new Vector3(0, 0, 1f);
 
             generated = true;
         }
