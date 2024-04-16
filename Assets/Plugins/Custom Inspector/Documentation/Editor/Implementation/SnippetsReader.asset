@@ -1011,8 +1011,8 @@ MonoBehaviour:
       integer: 1
       name: Bob
     foldoutAttributeExamples:
-      scriptable1: {fileID: 0}
-      scriptable2: {fileID: 0}
+      scriptable1: {fileID: 11400000, guid: b4584bd74f3120b4fa089e8c60814a90, type: 2}
+      scriptable2: {fileID: 11400000, guid: b4584bd74f3120b4fa089e8c60814a90, type: 2}
       anyMonoBehaviour: {fileID: 0}
     forceFillAttributeExamples:
       gob1: {fileID: 0}
@@ -1347,9 +1347,9 @@ MonoBehaviour:
       visible: 1
       myList:
         _: 0
-        values: 0000000000000000
+        values: 9300000000000000
       _: 0
-      myPositiveNumbers: 010000000200000003000000
+      myPositiveNumbers: 660000000200000003000000
     messageDrawerExamples:
       md:
         info: 

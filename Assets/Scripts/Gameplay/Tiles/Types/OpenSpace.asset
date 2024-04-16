@@ -20,3 +20,7 @@ MonoBehaviour:
   TileEffects:
     m_PersistentCalls:
       m_Calls: []
+  Prefabs:
+    _serializedList:
+    - Key: OpenSpace_Tile
+      Value: {fileID: 540384542066344494, guid: 194fa34497f7a424999d1b241bf85c3b, type: 3}

@@ -17,3 +17,5 @@ MonoBehaviour:
     _serializedList:
     - Key: OpenSpace
       Value: {fileID: 11400000, guid: 2265e5b8789aa0a40a09c2e04bc69e16, type: 2}
+  _prefabs:
+  - {fileID: 540384542066344494, guid: 194fa34497f7a424999d1b241bf85c3b, type: 3}

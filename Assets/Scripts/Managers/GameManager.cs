@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class GameManager : SingletonManager<GameManager>
+namespace Spacegame.Managers
 {
-
-
-    
+	public class GameManager : SingletonManager<GameManager>
+	{
+	
+	
+	    
+	}
+	
 }
-

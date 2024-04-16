@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Spacegame.Gameplay.Tiles
+namespace Spacegame.Gameplay
 {
     [Serializable]
     public class Tile : MonoBehaviour
@@ -32,8 +32,8 @@ namespace Spacegame.Gameplay.Tiles
             this.CostModifier   = _tileSpecs.CostModifier;
             this.isPathable     = _tileSpecs.Pathable;
             this.Visibility     = _tileSpecs.Visibility;
-            this.GameObject     = _tileSpecs.GetGameObject();
             this.TileEffects    = _tileSpecs.TileEffects;
+            this.GameObject     = transform.gameObject;
         }
 
         /// <summary>
