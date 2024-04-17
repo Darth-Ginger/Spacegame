@@ -8,11 +8,16 @@ using UnityRandom = UnityEngine.Random;
 using NaughtyAttributes;
 using CustomInspector;
 using TigerForge;
+using Utility;
 
 namespace Spacegame.Gameplay
 {
+	/// <summary>
+	/// Scriptable Card
+	/// Base Object that makes up all Cards
+	/// </summary>
 	[CreateAssetMenu(menuName = "Spacegame/Cards/Card", fileName = "Card")]
-	public class CardSO : ScriptableObject
+	public class CardSO : SerializableScriptableObject 
 	{
 		#region Enums
 		public enum CostEnum 
@@ -49,6 +54,8 @@ namespace Spacegame.Gameplay
 		private RankEnum 	 		_cardRank    = (RankEnum)1;
 		[SerializeField]	 
 		private TargetType  		_targetType 	 = TargetType.All;
+		[CustomInspector.Foldout]
+		private EffectSO[] Effects;
 		#endregion Variables
 
 		#region Properties
@@ -62,9 +69,8 @@ namespace Spacegame.Gameplay
 		public RankEnum 	  Rank { get => _cardRank; set => _cardRank = value; }
 		// The types of targets the card can target
 		public TargetType TargetType { get => _targetType; set => _targetType = value; }
-
-		[CustomInspector.Foldout]
-		public List<EffectSO> Effects = new();
+		// The effects of the card
+		public EffectSO[] CardEffects { get => Effects; set => Effects = value; }
 		#endregion Properties
 
 		public CardSO(string cardName = "", string cardDescription = "A Card", int cardCost = 0, int cardRank = 1, List<EffectSO> effects = null)
@@ -75,7 +81,13 @@ namespace Spacegame.Gameplay
 			_cardCost = (CostEnum)cardCost;
 			_cardRank = (RankEnum)cardRank;
 
+
         }
+
+		public bool HasEffect(EffectSO effect) => CardEffects.ToList().Contains(effect);
+		public EffectType GetEffectTypes() => CardEffects.ToList().Select(_ => _.Type).ToList().Aggregate((a, b) => a | b);
+
+		
 
 		 
 	}

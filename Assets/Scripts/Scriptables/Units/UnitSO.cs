@@ -7,16 +7,17 @@ using UnityEngine.InputSystem;
 using UnityRandom = UnityEngine.Random;
 using NaughtyAttributes;
 using CustomInspector;
+using Utility;
 
 namespace Spacegame.Gameplay
 {
 	[CreateAssetMenu(menuName = "Spacegame/Units/UnitSO", fileName = "UnitSO")]
-	public class UnitSO : ScriptableObject
+	public class UnitSO : SerializableScriptableObject 
 	{
 		public string Name;
-		public int 	  MaxHull;
-		public int    MaxShield;
-		public int    MaxSpeed;
+		public int 	  MaxHullpoints; // Indicator of physical health
+		public int    MaxShield;	 // Supplements Hullpoints
+		public int    MaxSpeed;		 // Determined by combination of Engine power, Overall Mass, etc
         public int Hardpoints => HighEnergyHP + LowEnergyHP + MissileHP + OtherHP;
         [BoxGroup("HardPoints")]
         public int    HighEnergyHP;

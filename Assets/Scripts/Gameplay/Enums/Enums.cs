@@ -71,6 +71,12 @@ namespace Spacegame.Gameplay
 		Enemy,
 		Neutral
 	}
+
+	public enum SortMethod {
+		None,
+		Ascending,
+		Descending,
+	}
 	public static class EnumManager
 	{
         public static T GetRandom<T>() where T : Enum

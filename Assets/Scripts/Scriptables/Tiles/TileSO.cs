@@ -6,14 +6,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityRandom = UnityEngine.Random;
 using NaughtyAttributes;
-
+using Utility;
 using UnityEngine.Events;
 using AYellowpaper.SerializedCollections;
 
 namespace Spacegame.Gameplay
 {
 	[CreateAssetMenu(menuName = "Spacegame/Tiles/TileSO", fileName = "TileSO")]
-	public class TileSO : ScriptableObject
+	public class TileSO : SerializableScriptableObject 
 	{
 		[BoxGroup("Tile Specs")]
 		public  string 		Name;

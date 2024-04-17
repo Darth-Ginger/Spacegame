@@ -12,6 +12,7 @@ using static Spacegame.Gameplay.Board;
 using System.Linq;
 using NaughtyAttributes;
 using ReadOnlyAttribute = NaughtyAttributes.ReadOnlyAttribute;
+using Utility;
 
 namespace Spacegame.Gameplay
 {
@@ -20,7 +21,7 @@ namespace Spacegame.Gameplay
     /// Container for all <see cref="Tile">Tiles</see> 
     /// </summary>
     [CreateAssetMenu(fileName = "TileDict", menuName = "Spacegame/Tiles/ScriptableTileDict")]
-    public class ScriptableTileDict : ScriptableObject
+    public class ScriptableTileDict : SerializableScriptableObject 
     {
         public GameObject BasePrefab;
 

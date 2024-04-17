@@ -8,11 +8,12 @@ using UnityRandom = UnityEngine.Random;
 using NaughtyAttributes;
 using CustomInspector;
 using TigerForge;
+using Utility;
 
 namespace Spacegame.Gameplay
 {
 	// [CreateAssetMenu(menuName = "Spacegame/Effects/", fileName = "Effects")]
-	public abstract class EffectSO : ScriptableObject
+	public abstract class EffectSO : SerializableScriptableObject 
 	{
 
         // Attributes to be set in the inspector
@@ -28,5 +29,14 @@ namespace Spacegame.Gameplay
 		{}
 		public virtual void Remove(GameObject target, GameObject source)
 		{}	
+
+		public virtual int CompareToName(EffectSO other)
+		{
+			return Name.CompareTo(other.Name);
+		}
+		public virtual int CompareToType(EffectSO other)
+		{
+			return Type.CompareTo(other.Type);
+		}
 	}
 }

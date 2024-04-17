@@ -7,11 +7,12 @@ using UnityEngine.InputSystem;
 using UnityRandom = UnityEngine.Random;
 using NaughtyAttributes;
 using CustomInspector;
+using Utility;
 
 namespace Spacegame.Gameplay
 {
 	[CreateAssetMenu(menuName = "Spacegame/Units/FactionSO", fileName = "FactionSO")]
-	public class FactionSO : ScriptableObject
+	public class FactionSO : SerializableScriptableObject 
 	{
 		
 		public string 	 Name 	   { get; private set; }

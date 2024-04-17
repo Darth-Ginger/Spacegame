@@ -1,5 +1,6 @@
 using NaughtyAttributes;
 using UnityEngine;
+using Utility;
 
 namespace Spacegame.Gameplay
 {
