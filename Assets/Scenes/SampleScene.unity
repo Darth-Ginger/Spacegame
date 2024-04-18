@@ -8909,18 +8909,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a11cce48e29c98419de1f441ea3467d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _spacer: 0
   _cardSO: {fileID: 11400000, guid: 276453cfe461d0a49a0011fd310f8615, type: 2}
-  _cardGuid:
-    m_Value0: 660886479
-    m_Value1: 3831615652
-    m_Value2: 2583695869
-    m_Value3: 823100949
-  _cardName: fdsfas
-  _cardDescription: 321313
-  _cardCost: 1
-  _cardRank: 1
-  _targetType: 124
-  _effects: []
 --- !u!4 &1254655142
 Transform:
   m_ObjectHideFlags: 0

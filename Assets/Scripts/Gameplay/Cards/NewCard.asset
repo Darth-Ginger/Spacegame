@@ -17,8 +17,8 @@ MonoBehaviour:
     m_Value1: 3831615652
     m_Value2: 2583695869
     m_Value3: 823100949
-  _cardName: ttyea
-  _cardDescription: 321313
-  _cardCost: 1
-  _cardRank: 1
-  _targetType: 1
+  _cardName: The Very First Card
+  _cardDescription: The First <b>Cool</b> card!
+  _cardCost: 6
+  _cardRank: 0
+  _targetType: 64
