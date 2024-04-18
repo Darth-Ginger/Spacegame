@@ -9,70 +9,70 @@ using NaughtyAttributes;
 using CustomInspector;
 using TigerForge;
 using Utility;
+using UnityEditor;
 
 namespace Spacegame.Gameplay
 {
 	/// <summary>
-	/// Scriptable Card
-	/// Base Object that makes up all Cards
+	/// Base object that makes up all Cards.
 	/// </summary>
 	[CreateAssetMenu(menuName = "Spacegame/Cards/Card", fileName = "Card")]
 	public class CardSO : SerializableScriptableObject 
 	{
-		#region Enums
-		public enum CostEnum 
-		{ 
-			O    = 0,
-			I    = 1,
-			II   = 2,
-			III  = 3,
-			IV   = 4,
-			V    = 5,
-			VI   = 6,
-			VII  = 7,
-			VIII = 8,
-			IX   = 9,
-			X    = 10
-		}
-		public enum RankEnum
-		{
-			Unranked = 0,
-			One      = 1,
-			Two      = 2,
-			Three    = 3,
-		}
-		#endregion Enums
 		
-		#region Variables
+
 		[SerializeField]
-		private string 	 			_cardName        = "Card";
+		private string _cardName = "Card";
+		
 		[SerializeField][RichText, Multiline(5)]
-		private string 	 			_cardDescription = "";
+		private string _cardDescription = "";
+		
 		[SerializeField][Toolbar][Title("Card Cost")]
-		private CostEnum 	 		_cardCost    = (CostEnum)0;
+		private CostEnum _cardCost = (CostEnum)0;
+		
 		[SerializeField][Toolbar][Title("Card Rank")]
-		private RankEnum 	 		_cardRank    = (RankEnum)1;
+		private RankEnum _cardRank = (RankEnum)1;
+
 		[SerializeField]	 
-		private TargetType  		_targetType 	 = TargetType.All;
+		private TargetType _targetType = TargetType.All;
+
 		[CustomInspector.Foldout]
 		private EffectSO[] Effects;
-		#endregion Variables
 
-		#region Properties
-		// The name of the card
+		
+		/// <summary>
+		/// The name of the card.
+		/// </summary>
 		public string CardName { get => _cardName; set => _cardName = value; } 
-		// The description of the card
-		public string CardDescription { get => _cardDescription; set => _cardDescription = value; }
-		// The cost to play the card
-		public CostEnum 	  Cost { get => _cardCost; set => _cardCost = value; }	
-		// The rank of the card
-		public RankEnum 	  Rank { get => _cardRank; set => _cardRank = value; }
-		// The types of targets the card can target
-		public TargetType TargetType { get => _targetType; set => _targetType = value; }
-		// The effects of the card
-		public EffectSO[] CardEffects { get => Effects; set => Effects = value; }
-		#endregion Properties
 
+		/// <summary>
+		/// The description of the card.
+		/// </summary>
+		public string CardDescription { get => _cardDescription; set => _cardDescription = value; }
+
+		/// <summary>
+		/// The cost to play the card.
+		/// </summary>
+		public CostEnum Cost { get => _cardCost; set => _cardCost = value; }	
+
+		/// <summary>
+		/// The rank of the card.
+		/// </summary>
+		public RankEnum Rank { get => _cardRank; set => _cardRank = value; }
+
+		/// <summary>
+		/// The types of targets the card can target.
+		/// </summary>
+		public TargetType TargetType { get => _targetType; set => _targetType = value; }
+
+		/// <summary>
+		/// The effects of the card.
+		/// </summary>
+		public EffectSO[] CardEffects { get => Effects; set => Effects = value; }
+
+		/// <summary>
+		/// Constructor for a card descriptor.
+		/// </summary>
 		public CardSO(string cardName = "", string cardDescription = "A Card", int cardCost = 0, int cardRank = 1, List<EffectSO> effects = null)
 		{
 			if (cardName == "") cardName = name;
@@ -80,15 +80,22 @@ namespace Spacegame.Gameplay
 			_cardDescription = cardDescription;
 			_cardCost = (CostEnum)cardCost;
 			_cardRank = (RankEnum)cardRank;
-
-
         }
 
+		private void OnValidate()
+		{
+			EditorUtility.SetDirty(this);
+			
+		}
+
+		/// <summary>
+		/// Checks if the card has a specific effect.
+		/// </summary>
 		public bool HasEffect(EffectSO effect) => CardEffects.ToList().Contains(effect);
-		public EffectType GetEffectTypes() => CardEffects.ToList().Select(_ => _.Type).ToList().Aggregate((a, b) => a | b);
-
 		
-
-		 
+		/// <summary>
+		/// Gets the types of effect in the card.
+		/// </summary>
+		public EffectType GetEffectTypes() => CardEffects.ToList().Select(_ => _.Type).ToList().Aggregate((a, b) => a | b);
 	}
 }

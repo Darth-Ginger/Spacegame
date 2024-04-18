@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df7544b265b2e124d9bd9299e84bfe42, type: 3}
   m_Name: NewCard
   m_EditorClassIdentifier: 
-  _cardName: 
-  _cardDescription: 
-  _cardCost: 5
+  _guid:
+    m_Value0: 660886479
+    m_Value1: 3831615652
+    m_Value2: 2583695869
+    m_Value3: 823100949
+  _cardName: ttyea
+  _cardDescription: 321313
+  _cardCost: 1
   _cardRank: 1
-  _targetType: 14
-  Effects: []
+  _targetType: 1

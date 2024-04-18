@@ -8880,6 +8880,62 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1254655140
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1254655142}
+  - component: {fileID: 1254655141}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1254655141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254655140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a11cce48e29c98419de1f441ea3467d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cardSO: {fileID: 11400000, guid: 276453cfe461d0a49a0011fd310f8615, type: 2}
+  _cardGuid:
+    m_Value0: 660886479
+    m_Value1: 3831615652
+    m_Value2: 2583695869
+    m_Value3: 823100949
+  _cardName: fdsfas
+  _cardDescription: 321313
+  _cardCost: 1
+  _cardRank: 1
+  _targetType: 124
+  _effects: []
+--- !u!4 &1254655142
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254655140}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.22, y: -0.04, z: 0.08}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1256148074
 GameObject:
   m_ObjectHideFlags: 0
@@ -15901,3 +15957,4 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 1697265265}
   - {fileID: 711340297}
+  - {fileID: 1254655142}

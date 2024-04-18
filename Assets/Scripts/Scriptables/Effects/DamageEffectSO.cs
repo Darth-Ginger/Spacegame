@@ -9,11 +9,22 @@ namespace Spacegame.Gameplay
     {
         
         [MinValue(1)]
-        public int damage = 1;
+        public int damage;
 
-        public override void Apply()
+        protected override void OnEnable()
         {
-            // target.GetComponent<Health>().TakeDamage(damage);
+            base.OnEnable();
+            damage = 1;
+        }
+
+        public override void Apply(GameObject target, GameObject source)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Remove(GameObject _target, GameObject _source)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

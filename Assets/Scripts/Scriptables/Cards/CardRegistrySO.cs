@@ -6,6 +6,9 @@ using Utility;
 
 namespace Spacegame.Gameplay
 {
+    /// <summary>
+    /// Container for <see cref="CardSO"/>s 
+    /// </summary>
     [CreateAssetMenu(menuName = "Spacegame/Cards/CardRegistrySO", fileName = "CardRegistrySO")]
     public class CardRegistrySO : Registry<CardSO>
     {

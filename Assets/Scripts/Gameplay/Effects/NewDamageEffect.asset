@@ -12,4 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d642314fddc96e441adc3354c12415c7, type: 3}
   m_Name: NewDamageEffect
   m_EditorClassIdentifier: 
+  _guid:
+    m_Value0: 4248964137
+    m_Value1: 3283624708
+    m_Value2: 3105914689
+    m_Value3: 1275020413
+  _source: {fileID: 0}
+  _target: {fileID: 0}
   damage: 1
